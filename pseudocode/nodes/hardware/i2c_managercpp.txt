@@ -1,0 +1,18 @@
+Node:	i2c_manager
+Input:
+	int16 address
+	int32 data
+Output:
+	bool closed
+Steps:
+	1. Initialization: Check if bus is able to be opened else exit(1)
+	2. if request exists, place on queue	
+	2. else
+		(a) serve that request
+	3. if request made to write to bus then
+		if nothing else on queue then
+			(a) write data to address
+
+
+
+
