@@ -1,0 +1,20 @@
+Node:	tracker (Motion to follow object around robot)
+Input:
+	Data (float from each IR sensor, representing distance in cm)
+Output:
+	Data to the servo controller to move head towards object
+Steps:
+	1. Initialization: center head on body (servo moves head to face front and center).
+	2. if float from left IR sensor is less than 200cm and float from right IR sensor 
+	greater than or equal to 200cm then:
+		(a) return data to turn head left.
+	3. else if float from right IR sensor is less than 200cm and float from left IR sensor 
+	greater than or equal to 200cm then:
+		(a) return data to turn head right.
+	4. else if float from left and right IR sensors is less than 200cm and float from
+	left IR sensor is less than float from right IR sensor then:
+		(a) return data to turn head left.
+	5. else if float from left and right IR sensors is less than 200cm and float from
+	right IR sensor is less than float from left IR sensor then:
+		(a) return data to turn head right.
+		

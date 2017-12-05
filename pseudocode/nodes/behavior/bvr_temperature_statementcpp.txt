@@ -1,0 +1,13 @@
+Node:	temperature_statement (Speech response to temperature state)
+Input:
+	Textual/spoken statement asking for temperature.
+	Float from temperature sensor.
+Output:
+	Audio stating temperature value as degrees Fahrenheit.
+Steps:
+	1. Recognize input statement asking for temperature
+	2. Convert temperature float value to string.
+	3. Append "degrees Fahrenheit" to temperature string.
+	4. Parse the temperature text statement to audio
+	5. Return temperature audio to speaker.
+	
