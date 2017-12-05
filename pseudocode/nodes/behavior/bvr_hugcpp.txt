@@ -5,5 +5,5 @@ Output:
 	"I love you" audio.
 Steps:
 	1. if more than one force input registered then:
-	2. 		if input from force sensors is greater than certain amount then:
-				(a) Send "I love you" audio to speaker.
+	2. if input from force sensors is greater than certain amount then:
+		(a) Send "I love you" audio to speaker.
