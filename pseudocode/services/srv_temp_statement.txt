@@ -1,0 +1,15 @@
+
+Node:	temperature_statement (Spoken declaration of whether or not something is hot)
+Input:
+	Data (float) from temperature sensor (degrees Fahrenheit).
+Config: 
+	Temperature (float): 85.0 degrees (F) - "hot," otherwise "not hot."
+Output:
+	"Hot" or "Not hot" audio.
+Steps:
+	1. Initialization: control temperature is 85.0 degrees.
+	2. if temperature is greater than or equal to 85.0 then:
+		(a) Send "Hot" audio to speaker.
+	3. else if temperature is less than 85.0 then:
+		(a) Send "Not hot" audio to speaker.
+

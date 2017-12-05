@@ -1,0 +1,13 @@
+
+Node:	wave_greeting (Speech response to waving gesture)
+Input:
+	Data from the gesture sensor.
+Config: 
+	Gesture: hand moving left-to-right and immediately right-to-left over gesture sensor.
+Output:
+	Greeting audio.
+Steps:
+	1. Initialization: no initial recognized gesture (void or null).
+	2. Recognize if input from gesture sensor matches config.
+	3. Send greeting audio to speaker.
+
