@@ -1,0 +1,9 @@
+Node:	shake_head (Motion response representing "no")
+Input:
+	Text/spoken question. 
+Output:
+	Data to servo controller to move servo motor.
+Steps:
+	1. Initialization: data to center head on body (servo moves head to face front and center).
+	2. if response to question is "false" then
+		(a) Output data to controller to have robot shake head
