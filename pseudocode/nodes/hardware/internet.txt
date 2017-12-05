@@ -1,0 +1,13 @@
+Node:	internet (internet communication node)
+Input:
+	http
+Output:
+	Depends upon what behavior node needs notification
+	Turning head behavior: data to servo controller
+	Report temperature: audio stating temperature to speaker
+	Speak certain statement: audio from typed statement to speaker	
+Steps:
+	1. Initialization: Begin publishing to selected topic (10Hz)
+	2. if a request is made for a measurement/statement then
+		(a) provide measurement to svc_int
+

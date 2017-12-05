@@ -1,0 +1,10 @@
+Node:	Microphone
+Input:
+	None
+Output:
+	int16 address
+	digitized audio stream (units will be either pressure or velocity)
+Steps:
+	1. Initialization: Begin publishing to tpc_audio_in (10Hz)
+	2. if a request is made for an audio statement then
+		(a) provide measurement to svc_audio_in

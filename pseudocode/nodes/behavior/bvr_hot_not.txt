@@ -5,7 +5,7 @@ Input:
 Config: 
 	Temperature (float): 85.0 degrees (F) - "hot," otherwise "not hot."
 Output:
-	"Hot" or "Not hot" audio.
+	"Hot" or "Not hot" audio. (String)
 Steps:
 	Initialization: request temperature from svc_temp
 	1. Initialization: control temperature is 85.0 degrees.

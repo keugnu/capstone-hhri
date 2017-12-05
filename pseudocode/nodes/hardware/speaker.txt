@@ -1,0 +1,10 @@
+Node:	Speaker
+Input:
+	None
+Output:
+	int16 address
+	audio stream (.wav)
+Steps:
+	1. Initialization: Begin publishing to tpc_audio_out (10Hz)
+	2. if a request is made for an audio statement then
+		(a) provide measurement to svc_audio_out
