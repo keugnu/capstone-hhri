@@ -1,0 +1,11 @@
+Node:	mcp9808_pub (Temperature Sensor)
+Input:
+	None
+Output:
+	int16 address
+	bool hot
+	int16 temp
+Steps:
+	1. Initialization: Begin publishing to tpc_temp
+	2. if a request is made for a measurement then
+		(a) provide measurement to svc_temp
