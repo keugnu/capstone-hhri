@@ -1,0 +1,11 @@
+Node:	vl53l0x_pub (TOF Proximity Sensor)
+Input:
+	None
+Output:
+	int16 address
+	float32 range
+Steps:
+	1. Initialization: Begin publishing to tpc_tracker (10Hz)
+	2. if a request is made for a measurement then
+		(a) provide measurement to svc_ir
+
