@@ -7,7 +7,7 @@ Config:
 Output:
 	Greeting audio.
 Steps:
-	1. Initialization: no initial recognized gesture (void or null).
+	1. Initialization: begin subscribing to tpc_gesture (5Hz)
 	2. Recognize if input from gesture sensor matches config.
 	3. Send greeting audio to speaker.
 

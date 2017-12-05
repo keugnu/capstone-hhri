@@ -4,6 +4,7 @@ Input:
 Output:
 	Data (floats) to the LED driver to change LED color
 Steps:
+	Initialization: begin subscribing to tpc_emotion (5Hz)
 	1. if text statement is "I hate you" then
 		(a) Output float is R(1.0v), G(0.0v), B(0.0v) //red
 	2. if text statement is "I love you" then

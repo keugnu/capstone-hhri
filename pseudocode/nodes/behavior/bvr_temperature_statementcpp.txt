@@ -5,6 +5,7 @@ Input:
 Output:
 	Audio stating temperature value as degrees Fahrenheit.
 Steps:
+	Initialization: begin subscribing to tpc_temperature (5Hz)
 	1. Recognize input statement asking for temperature
 	2. Convert temperature float value to string.
 	3. Append "degrees Fahrenheit" to temperature string.

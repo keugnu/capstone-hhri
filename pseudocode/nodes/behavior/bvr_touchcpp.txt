@@ -4,6 +4,7 @@ Input:
 Output:
 	"Thank you" audio.
 Steps:
+	Initialization: begin subscribing to tpc_touch (5Hz)
 	1. if one or more touch sensors register a tap/pat then:
 		(a) Send "Thank you" audio to speaker.
 

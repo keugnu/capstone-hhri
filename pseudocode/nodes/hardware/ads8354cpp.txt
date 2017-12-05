@@ -1,0 +1,10 @@
+Node:	ADS8354_pub (ADC)
+Input:
+	None
+Output:
+	int16 address
+	float32 count
+Steps:
+	1. Initialization: Begin publishing to tpc_force (10Hz)
+	2. if a request is made for a measurement then
+		(a) provide measurement to svc_force

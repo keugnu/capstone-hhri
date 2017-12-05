@@ -7,6 +7,7 @@ Config:
 Output:
 	"Hot" or "Not hot" audio.
 Steps:
+	Initialization: request temperature from svc_temp
 	1. Initialization: control temperature is 85.0 degrees.
 	2. if temperature is greater than or equal to 85.0 then:
 		(a) Send "Hot" audio to speaker.

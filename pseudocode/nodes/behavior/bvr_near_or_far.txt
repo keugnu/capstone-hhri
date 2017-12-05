@@ -6,7 +6,7 @@ Config:
 Output:
 	"Near" or "far" audio.
 Steps:
-	1. Initialization: control distance is 0.5 meters.
+	1. Initialization: request float from svc_sonar
 	2. if distance is greater than or equal to 0.5 then:
 		(a) Send "Far" audio to speaker.
 	3. else if distance is less than 0.5 then:
