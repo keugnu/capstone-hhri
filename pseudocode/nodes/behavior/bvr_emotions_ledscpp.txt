@@ -1,6 +1,6 @@
 Node:	emotions_leds (Changing of LED colors to represent emotion)
 Input:
-	Textual statement
+	Textual statement (String)
 Output:
 	Data (floats for RGB) to the LED driver to change LED color
 Steps:

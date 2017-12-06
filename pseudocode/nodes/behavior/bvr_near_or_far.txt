@@ -4,7 +4,7 @@ Input:
 Config: 
 	Distance (float): 0.5 m - "Near," otherwise far
 Output:
-	"Near" or "far" audio.
+	"Near" or "far" audio (String).
 Steps:
 	1. Initialization: request float from svc_sonar
 	2. if distance is greater than or equal to 0.5 then:

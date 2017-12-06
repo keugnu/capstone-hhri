@@ -5,6 +5,4 @@ Output:
 	int16 address
 	float32 count
 Steps:
-	1. Initialization: Begin publishing to tpc_force (10Hz)
-	2. if a request is made for a measurement then
-		(a) provide measurement to svc_force
+	1. Initialization: Begin publishing to tpc_force (10Hz).

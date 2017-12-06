@@ -1,10 +1,10 @@
-Node:	vl53l0x_pub (TOF Proximity Sensor)
+Node:	pca9685_led_pub (LED driver)
 Input:
 	None
 Config:
 	int16 address
 Output:
-	float32 range
+	float32 pulse_width
 Steps:
 	1. Initialization: if nothing being published on i2c bus then:
-		(a) Begin publishing to tpc_tracker (10Hz)
+		(a) Begin publishing to tpc_led (10Hz)

@@ -1,11 +1,10 @@
 Node:	pca9685_servo_pub (Servo controller)
 Input:
 	None
-Output:
+Config:
 	int16 address
-	float32 
+Output:
+	float32
 Steps:
-	1. Initialization: Begin publishing to tpc_servo (10Hz)
-	2. if a request is made for a measurement then
-		(a) provide measurement to svc_servo
-
+	1. Initialization: if nothing being published on i2c bus then:
+		(a) Begin publishing to tpc_servo (10Hz)

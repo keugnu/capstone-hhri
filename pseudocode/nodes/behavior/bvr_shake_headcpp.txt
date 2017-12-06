@@ -1,6 +1,6 @@
 Node:	shake_head (Motion response representing "no")
 Input:
-	Text/spoken question. 
+	Text/spoken question (String). 
 Output:
 	Data to servo controller to move servo motor.
 Steps:

@@ -1,10 +1,10 @@
 Node:	mb1202_pub (Sonar Proximity Sensor)
 Input:
 	None
-Output:
+Config: 
 	int16 address
+Output:
 	float32 range
 Steps:
-	1. Initialization: Begin publishing to tpc_sonar (10Hz)
-	2. if a request is made for a measurement then
-		(a) provide measurement to svc_sonar
+	1. Initialization: if nothing being published on i2c bus then:
+		(a) Begin publishing to tpc_sonar (10Hz)

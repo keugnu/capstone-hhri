@@ -1,14 +1,15 @@
 Node:	temperature_statement (Speech response to temperature state)
 Input:
-	Textual/spoken statement asking for temperature.
 	Float from temperature sensor.
 Output:
-	Audio stating temperature value as degrees Fahrenheit.
+	Audio stating temperature value as degrees Fahrenheit (String).
 Steps:
 	Initialization: begin subscribing to tpc_temperature (5Hz)
-	1. Recognize input statement asking for temperature
+	1. Recognize initial temperature.
 	2. Convert temperature float value to string.
 	3. Append "degrees Fahrenheit" to temperature string.
 	4. Parse the temperature text statement to audio
 	5. Return temperature audio to speaker.
+	6. if temperature is greater than or less than initial temperature then:
+		(a) Repeat steps 2 - 5 (Continuously update temperature everytime it changes).
 	

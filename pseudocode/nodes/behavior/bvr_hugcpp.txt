@@ -2,7 +2,7 @@ Node:	hug (Speech response to hugging force)
 Input:
 	Data (integer for each force sensor), representing pressure.
 Output:
-	"I love you" audio.
+	(String) "I love you" to audio.
 Steps:
 	Initialization: begin subscribing to tpc_force (5Hz)
 	1. if more than one force input registered then:

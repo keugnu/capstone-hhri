@@ -1,10 +1,10 @@
 Node:	Speaker
 Input:
 	None
-Output:
+Config:
 	int16 address
+Output:
 	audio stream (.wav)
 Steps:
-	1. Initialization: Begin publishing to tpc_audio_out (10Hz)
-	2. if a request is made for an audio statement then
-		(a) provide measurement to svc_audio_out
+	1. Initialization:if nothing being published on i2s bus then:
+		(a) Begin publishing to tpc_audio_out (10Hz)

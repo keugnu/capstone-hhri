@@ -5,7 +5,7 @@ Input:
 Config: 
 	Gesture: hand moving left-to-right and immediately right-to-left over gesture sensor.
 Output:
-	Greeting audio.
+	Greeting audio (String).
 Steps:
 	1. Initialization: begin subscribing to tpc_gesture (5Hz)
 	2. Recognize if input from gesture sensor matches config.

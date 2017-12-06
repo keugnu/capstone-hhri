@@ -1,8 +1,10 @@
 Node:	mpr121_pub (Touch Sensor Controller)
 Input:
 	None
-Output:
+Config:
 	int16 address
+Output:
 	bool touched
 Steps:
-	1. Initialization: Begin publishing data to tpc_topic (10Hz)
+	1. Initialization: if nothing being published on i2c bus then:
+		(a) Begin publishing data to tpc_topic (10Hz)
