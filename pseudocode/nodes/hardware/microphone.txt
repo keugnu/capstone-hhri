@@ -7,4 +7,4 @@ Output:
 	digitized audio stream (units will be either pressure or velocity)
 Steps:
 	1. Initialization: if nothing being published on i2s bus then:
-		(a) Begin publishing to tpc_speech (20Hz)
+		(a) Begin publishing to tpc_input_speech (20Hz)

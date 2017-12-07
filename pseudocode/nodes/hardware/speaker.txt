@@ -1,10 +1,11 @@
 Node:	Speaker
 Input:
-	None
+	output_audio (String)
 Config:
 	int16 address
 Output:
 	audio stream (.wav)
 Steps:
-	1. Initialization:if nothing being published on i2s bus then:
-		(a) Begin publishing to tpc_audio_out (10Hz)
+	1. Initialization: begin subscribing to tpc_output_speech (10Hz)
+	2. if input String received over topic then:
+		(a) output String as audio.
