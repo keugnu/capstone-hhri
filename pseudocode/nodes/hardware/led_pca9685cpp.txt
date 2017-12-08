@@ -6,7 +6,4 @@ Config:
 Output:
 	float32 pulse_width (to control light dimming)
 Steps:
-	1. Initialization: begin subscribing to tpc_emotion
-	2. Take note of inition PW
-	3. if PW changes value then:
-		(a) instruct LEDs based on input PW value
+	1. Initialization: begin publishing to tpc_emotion

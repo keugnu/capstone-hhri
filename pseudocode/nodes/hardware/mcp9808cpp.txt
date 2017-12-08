@@ -6,5 +6,5 @@ Config:
 Output:
 	float32 temp
 Steps:
-	1. Initialization: if nothing being published on i2c bus then:
-		(a) Begin publishing to tpc_temp (10Hz)
+	1. Initialization: 
+	
