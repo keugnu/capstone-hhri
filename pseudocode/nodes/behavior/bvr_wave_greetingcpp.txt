@@ -1,13 +1,14 @@
 
 Node:	wave_greeting (Speech response to waving gesture)
 Input:
-	Data from the gesture sensor.
+	float32 x
+	float32 z
 Config: 
 	Gesture: hand moving left-to-right and immediately right-to-left over gesture sensor.
 Output:
-	Greeting audio (String).
+	String greeting //"Hello"
 Steps:
-	1. Initialization: begin subscribing to tpc_gesture (5Hz)
+	1. Initialization: begin subscribing to tpc_gesture (100Hz)
 	2. Recognize if input from gesture sensor matches config.
 	3. Send greeting audio to speaker.
 

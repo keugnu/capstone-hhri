@@ -4,7 +4,10 @@ Input:
 Config: 
 	int16 address
 Output:
-	float32 range
+	float32 range // cm
 Steps:
-	1. Initialization: if nothing being published on i2c bus then:
-		(a) Begin publishing to tpc_sonar (10Hz)
+	1. Initialization: Send read request to I2C bus manager node (10Hz)
+	2. Publish range to tpc_sonar
+	3. if an asynchronous read request made then
+		(a) send request to I2C bus manager
+		(b) Return value from request to srv_sonar

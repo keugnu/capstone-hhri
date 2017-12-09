@@ -1,10 +1,9 @@
 Node:	touch (Speech response to taps/pats on the should)
 Input:
-	Data (integer, one for each touch sensor).
+	uint8 touch // two touch sensors
 Output:
-	"Thank you" audio (String).
+	String tap_response // "Thank you"
 Steps:
-	Initialization: begin subscribing to tpc_touch (5Hz)
+	Initialization: begin subscribing to tpc_touch (10Hz)
 	1. if one or more touch sensors register a tap/pat then:
-		(a) Send "Thank you" audio to speaker.
-
+		(a) "Thank you" played on speaker

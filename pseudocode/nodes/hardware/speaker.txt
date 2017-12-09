@@ -1,11 +1,10 @@
 Node:	Speaker
 Input:
-	output_audio (String)
+	String tts //text to speech
+	String path //path to audio file
 Config:
 	int16 address
 Output:
-	audio stream (.wav)
+	None
 Steps:
-	1. Initialization: begin subscribing to tpc_output_speech (10Hz)
-	2. if input String received over topic then:
-		(a) output String as audio.
+	1. Initialization: Subscribe 

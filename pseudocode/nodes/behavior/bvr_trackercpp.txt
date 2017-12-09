@@ -1,11 +1,11 @@
 Node:	tracker (Motion to follow object around robot)
 Input:
-	Data (float from each IR sensor, representing distance in cm)
+	float32 proximity // two IR sensors
 Output:
 	Data to the servo controller to move head towards object
 Steps:
 	Initialization: center head on body (servo moves head to face front and center).
-	Begin subscribing to tpc_tracker (5Hz) (both right and left)
+	Begin subscribing to tpc_tracker (10Hz) (both right and left)
 	2. if float from left IR sensor is less than 200cm and float from right IR sensor 
 	greater than or equal to 200cm then:
 		(a) return data to turn head left.

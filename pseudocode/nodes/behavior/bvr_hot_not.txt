@@ -1,16 +1,16 @@
 
 Node:	hot_not (Spoken declaration of whether or not something is hot)
 Input:
-	Data (float) from temperature sensor (degrees Fahrenheit).
+	Speech keyword: "Temperature"
 Config: 
-	Temperature (float): 85.0 degrees (F) - "hot," otherwise "not hot."
+	30.0 degrees (C) - "hot," otherwise "not hot."
 Output:
-	"Hot" or "Not hot" audio. (String)
+	String hot_not ("Hot" or "Not hot").
 Steps:
 	Initialization: request temperature from svc_temp
-	1. Initialization: control temperature is 85.0 degrees.
-	2. if temperature is greater than or equal to 85.0 then:
-		(a) Send "Hot" audio to speaker.
-	3. else if temperature is less than 85.0 then:
-		(a) Send "Not hot" audio to speaker.
+	1. Initialization: control temperature is 30.0 degrees.
+	2. if temperature is greater than or equal to 30.0 then:
+		(a) Return "Hot" String
+	3. else if temperature is less than 30.0 then:
+		(a) Return "Not hot" String
 

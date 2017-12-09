@@ -1,13 +1,13 @@
 Node:	near_or_far (Spoken declaration of whether or not something is nearby)
 Input:
-	Data (float) from the sonar sensor (representing meters).
+	float32 proximity
 Config: 
-	Distance (float): 0.5 m - "Near," otherwise far
+	0.5 m Distance (float): "Near," otherwise far
 Output:
-	"Near" or "far" audio (String).
+	String near_far // "Near" or "far"
 Steps:
 	1. Initialization: request float from svc_sonar
 	2. if distance is greater than or equal to 0.5 then:
-		(a) Send "Far" audio to speaker.
+		(a) "Far" played on speaker
 	3. else if distance is less than 0.5 then:
-		(a) Send "Near" audio to speaker.
+		(a) "Near" played on speaker

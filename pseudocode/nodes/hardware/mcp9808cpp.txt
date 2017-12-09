@@ -6,5 +6,8 @@ Config:
 Output:
 	float32 temp
 Steps:
-	1. Initialization: 
-	
+	1. Initialization: Send read request to I2C bus manager node (10Hz)
+	2. Publish temp to tpc_temp
+	3. if an asynchronous read request made then
+		(a) send request to I2C bus manager
+		(b) Return value from request to srv_temp

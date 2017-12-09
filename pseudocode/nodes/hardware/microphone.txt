@@ -6,5 +6,5 @@ Config:
 Output:
 	digitized audio stream (units will be either pressure or velocity)
 Steps:
-	1. Initialization: if nothing being published on i2s bus then:
-		(a) Begin publishing to tpc_input_speech (20Hz)
+	1. Initialization: Send read request to I2S bus manager node (100Hz)
+	2. Publish audio to tpc_speech
