@@ -1,0 +1,12 @@
+Node:	zxgesture_pub (Gesture sensor)
+Input:
+	None
+Config:
+	int16 address
+Output:
+	float32 x_range //cm
+	float32 z_range
+Steps:
+	1. Initialization: Send read request to I2C bus manager node (100Hz)
+	2. Publish x_range, z_range to tpc_gesture
+	
