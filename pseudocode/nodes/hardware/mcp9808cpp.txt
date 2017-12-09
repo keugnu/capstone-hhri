@@ -1,6 +1,6 @@
 Node:	mcp9808_pub (Temperature Sensor)
 Input:
-	None
+	None (see what the read register takes, make it that format)
 Config:
 	int16 address
 Output:
@@ -10,4 +10,4 @@ Steps:
 	2. Publish temp to tpc_temp
 	3. if an asynchronous read request made then
 		(a) send request to I2C bus manager
-		(b) Return value from request to srv_temp
+		(b) Return temp value from request to srv_temp

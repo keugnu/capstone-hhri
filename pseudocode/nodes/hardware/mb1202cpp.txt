@@ -9,5 +9,5 @@ Steps:
 	1. Initialization: Send read request to I2C bus manager node (10Hz)
 	2. Publish range to tpc_sonar
 	3. if an asynchronous read request made then
-		(a) send request to I2C bus manager
-		(b) Return value from request to srv_sonar
+		(a) send read request to I2C bus manager
+		(b) Return range value from request to srv_sonar

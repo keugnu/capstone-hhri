@@ -1,4 +1,4 @@
-Node:	vl53l0x_pub (TOF Proximity Sensor)
+Node:	vl53l0x_pub (TOF Proximity Sensor, there will be two of these nodes)
 Input:
 	None
 Config:

@@ -1,12 +1,10 @@
-Node:	mpr121_pub (Touch Sensor Controller)
+Node:	mpr121_pub (Touch Sensor, there will be one of these nodes for each touch sensor)
 Input:
 	None
 Config:
 	int16 address
 Output:
-	bool touched
+	uint16 touch
 Steps:
 	1. Initialization: Send read request to I2C bus manager node (10Hz)
-	2. if pressure is above normal then
-		(a) Publish touched to tpc_touch
-		
+	2. publish touch value to tpc_touch

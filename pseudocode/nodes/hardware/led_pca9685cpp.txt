@@ -1,9 +1,19 @@
 Node:	pca9685_led_pub (LED driver)
 Input:
-	float32 pulse_width (to control light dimming)
+	String color // "red" "blue" "yellow"
 Config:
 	int16 address
 Output:
-	float32 pulse_width (to control light dimming)
+	uint16 pwm_freq_r (to control red light)
+	uint16 pwm_freq_g (to control green light)
+	uint16 pwm_freq_b (to control blue light)
 Steps:
-	1. Initialization: begin publishing to tpc_emotion
+	1. Initialization: Send write request to I2C bus manager node
+		(a)Set LEDs to off by setting pwm_freq_r, pwm_freq_g, pwm_freq_b to 0.0
+	2. Subscribe to tpc_colors
+	3. if a change is detected on tpc_colors then
+		(a) Send write request to I2C bus manager node
+			(i) if color is "red" then pwm_freq_r = 1.0, pwm_freq_g = 0.0, pwm_freq_b = 0.0
+			(ii) if color is "blue" then pwm_freq_r = 0.0, pwm_freq_g = 0.0, pwm_freq_b = 1.0
+			(ii) if color is "yellow" then pwm_freq_r = 1.0, pwm_freq_g = 0.2, pwm_freq_b = 0.0
+			

@@ -4,7 +4,7 @@ Input:
 Config:
 	int16 address
 Output:
-	digitized audio stream (units will be either pressure or velocity)
+	
 Steps:
 	1. Initialization: Send read request to I2S bus manager node (100Hz)
 	2. Publish audio to tpc_speech
