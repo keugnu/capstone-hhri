@@ -13,9 +13,9 @@ Steps:
 	1. Initialization: control temperature is 30.0 degrees.
 	2. if temperature is greater than or equal to 30.0 then:
 		(a) String hot_not = "Hot"
-		(b) Play hot_not audio
+		(b) Send request to srv_speaker (hot_not)
 		(b) Publish hot_color to tpc_colors
 	3. else if temperature is less than 30.0 then:
 		(a) String hot_not = "Not hot"
-		(b) Play hot_not audio
+		(b) Send request to srv_speaker (hot_not)
 		(b) Publish cold_color to tpc_colors

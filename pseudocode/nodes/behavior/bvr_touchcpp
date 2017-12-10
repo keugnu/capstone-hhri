@@ -6,4 +6,4 @@ Output:
 Steps:
 	Initialization: begin subscribing to tpc_touch (10Hz)
 	1. if one or more touch sensors register a tap/pat then:
-		(a) "Thank you" played on speaker
+		(a) Send request to srv_speaker (tap_response)
