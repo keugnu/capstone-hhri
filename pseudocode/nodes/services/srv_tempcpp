@@ -7,3 +7,4 @@ Steps:
     Initialization: Wait for requests
     1.  if request is received, then
         (a) send request to I2C Bus Manager (R,addr)
+        (b) return temp

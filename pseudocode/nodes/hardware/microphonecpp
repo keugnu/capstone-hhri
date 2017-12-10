@@ -4,7 +4,7 @@ Input:
 Config:
 	int16 address
 Output:
-	
+	None
 Steps:
-	1. Initialization: Send read request to I2S bus manager node (100Hz)
-	2. Publish audio to tpc_speech
+	1. Initialization: Send read request to I2S bus manager node
+	2. Publish audio to tpc_speech (100Hz)

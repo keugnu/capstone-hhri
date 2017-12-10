@@ -14,5 +14,7 @@ Steps:
             if request type is T, then
                 (a) get current position of the servo by making a request to the I2C Bus Manager (R,addr)
                 (b) send request to I2C Bus Manager (W,addr,current+degrees)
+                (c) return true
             else
                 (a) send request to I2C Bus Manager (W,addr,degrees)
+                (b) return true

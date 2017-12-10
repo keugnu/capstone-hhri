@@ -4,6 +4,7 @@ Input:
 Output:
     float32 proximity (cm)
 Steps:
-    Initialization: Wait for requests
-    1.  if request is received, then
+    1. Initialization: Wait for requests
+    2.  if request is received, then
         (a) send request to I2C Bus Manager (R,addr)
+        (b) return proximity
