@@ -16,8 +16,9 @@ Steps:
 			(a) serve top request
 				(i) 	Determine type and use address to find required args
 				(ii)	Perform request
-	5.	if request failed, then
-			(a) return true
-		else
-			(a) Place request back onto queue
-			(b) return false
+							if request succeeds, then
+								(a) return true
+							else:
+								(a) increase priotity by 1
+								(b) place request back onto queue
+								(c) return false
