@@ -2,9 +2,9 @@ Node:	vl53l0x_pub (TOF Proximity Sensor, there will be three of these nodes)
 Input:
 	None
 Config:
-	int16 address
+	struct ir_sense { unit8 addr, unit16 proximity (cm) }
 Output:
-	float32 range (mm)
+	ir_sense
 Steps:
 	1. Initialization: Send read request to I2C Bus Manager
-	2. Publish range to tpc_tracker (10Hz)
+	2. Publish ir_sense to tpc_tracker (10Hz)

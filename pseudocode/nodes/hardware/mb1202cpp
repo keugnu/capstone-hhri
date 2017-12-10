@@ -2,7 +2,7 @@ Node:	mb1202_pub (Sonar Proximity Sensor)
 Input:
 	None
 Config: 
-	int16 address
+	uint8 address
 Output:
 	float32 range (cm)
 Steps:

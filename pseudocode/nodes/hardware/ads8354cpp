@@ -2,9 +2,9 @@ Node:	ADS8354_pub (ADC)
 Input:
 	None
 Config:
-	struct pressure_sensor { int16 addr, float32 pressure }
+	struct pressure_sensor { uint8 addr, float32 pressure }
 Output:
-	pressure_sensor[]
+	pressure_sensor
 Steps:
 	1. Initialization: Send read request to SPI Bus Manager
 	2. Publish pressure_sensor to tpc_pressure (10Hz)

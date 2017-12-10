@@ -1,14 +1,14 @@
 Node:	hug (Speech response to hugging force)
 Input:
-	uint16 pressure // need to make sure >=2 force sensors triggered, on opposite sides of torso. Units are pounds
+	struct pressure_sensor
 Output:
-	String hug_response: "I love you"
-	String happy_color: "yellow"
+	string hug_response: "I love you"
+	string happy_color: "yellow"
 Steps:
 	Initialization: begin subscribing to tpc_force (10Hz)
 	1. if more than one force input registered (data input from >1 topics) then:
 	2. if pressure is greater than 5lbs/sq. in., then:
-		(a) Play hug_response audio
+		(a) send request to srv_speaker (hug_response)
 		(b) Publish happy_color to tpc_colors
 		
 		

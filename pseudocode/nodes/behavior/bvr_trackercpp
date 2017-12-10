@@ -1,6 +1,6 @@
 Node:	tracker (Motion to follow object around robot)
 Input:
-	struct proximity[] 	// three IR sensors (left, right, center)
+	struct proximity[]	// three IR sensors (left, right, center)
 Config:
 	max proximity: 100cm
 Output:

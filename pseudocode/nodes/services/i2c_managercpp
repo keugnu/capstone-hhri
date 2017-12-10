@@ -1,10 +1,10 @@
 Node:	i2c_manager
 Input:
 	char type ['R','W']
-	int16 address
+	uint8 address
 	... (variadic)
 Config:
-	int8 address
+	uint8 address
 Output:
 	bool success
 Steps:

@@ -1,9 +1,11 @@
 Node:	touch (Speech response to taps/pats on the should)
 Input:
-	uint8 touch // two touch sensors
+	
+Config:
+	struct touch { unit8 addr, uint16 pressure }
 Output:
-	String tap_response // "Thank you"
+	None
 Steps:
 	Initialization: begin subscribing to tpc_touch (10Hz)
 	1. if one or more touch sensors register a tap/pat then:
-		(a) Send request to srv_speaker (tap_response)
+		(a) send request to srv_speaker ("Thank you")

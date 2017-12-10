@@ -2,7 +2,7 @@ Node:	mcp9808_pub (Temperature Sensor)
 Input:
 	None
 Config:
-	int16 address
+	uint8 address
 Output:
 	float32 temp
 Steps:

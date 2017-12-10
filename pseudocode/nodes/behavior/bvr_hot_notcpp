@@ -3,19 +3,18 @@ Node:	hot_not (Spoken declaration of whether or not something is hot)
 Input:
 	Speech keyword: "Temperature"
 Config: 
-	30.0 degrees (C) - "hot," otherwise "not hot."
+	srv_temp > 30.0	"It is hot."
+				o/w "It is not hot."
+	string hot_color: "red"
+	string cold_color: "blue"
 Output:
-	String hot_not: "Hot" or "Not hot"
-	String hot_color: "red"
-	String cold_color: "blue"
+	None
 Steps:
 	Initialization: request temperature from svc_temp
 	1. Initialization: control temperature is 30.0 degrees.
 	2. if temperature is greater than or equal to 30.0 then:
-		(a) String hot_not = "Hot"
-		(b) Send request to srv_speaker (hot_not)
+		(a) Send request to srv_speaker ("It is Hot")
 		(b) Publish hot_color to tpc_colors
 	3. else if temperature is less than 30.0 then:
-		(a) String hot_not = "Not hot"
-		(b) Send request to srv_speaker (hot_not)
+		(a) Send request to srv_speaker ("It is not hot")
 		(b) Publish cold_color to tpc_colors

@@ -3,7 +3,7 @@ Input:
 	String tts //text to speech
 	String path //path to audio file
 Config:
-	int16 address
+	uint8 address
 Output:
 	None
 Steps:

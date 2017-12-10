@@ -2,9 +2,9 @@ Node:	mpr121_pub (Touch Sensor, there will be one of these nodes for each touch 
 Input:
 	None
 Config:
-	int16 address
+	struct touch_sense { unit8 addr, unit16 touch }
 Output:
-	uint16 touch
+	touch_sense
 Steps:
 	1. Initialization: Send read request to I2C bus manager node
-	2. publish touch to tpc_touch (10Hz)
+	2. publish touch_sense to tpc_touch (10Hz)

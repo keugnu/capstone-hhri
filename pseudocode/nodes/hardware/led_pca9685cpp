@@ -2,7 +2,7 @@ Node:	led_pca9685 (LED driver)
 Input:
 	String color ["red", "blue", "yellow"]
 Config:
-	int16 address
+	uint8 address
 Output:
 	uint16 pwm_freq_r (to control red light)
 	uint16 pwm_freq_g (to control green light)
