@@ -4,7 +4,7 @@ Input:
 Config: 
 	uint8 address
 Output:
-	float32 range (cm)
+	uint16 range (cm)
 Steps:
 	1. Initialization: Send read request to I2C bus manager node
 	2. Publish range to tpc_sonar (5Hz)

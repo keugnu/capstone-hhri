@@ -2,9 +2,10 @@ Node:   temp
 Input:
     None
 Output:
-    float32 temp (C)
+    int16 temp (C)
 Steps:
     Initialization: Wait for requests
     1.  if request is received, then
         (a) send request to I2C Bus Manager (R,addr)
+        (b) Convert uint16 from sensor to degrees C
         (b) return temp

@@ -4,7 +4,8 @@ Input:
 Config:
 	uint8 address
 Output:
-	float32 temp
+	uint16 temp
 Steps:
 	1. Initialization: Send read request to I2C bus manager node
-	2. Publish temp to tpc_temp (10Hz)
+	2. Convert temp to degrees C
+	3. Publish temp to tpc_temp (10Hz)

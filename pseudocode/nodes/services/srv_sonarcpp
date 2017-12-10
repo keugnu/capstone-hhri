@@ -2,7 +2,7 @@ Node:   sonar
 Input:
     None
 Output:
-    float32 proximity (cm)
+    uint16 proximity (cm)
 Steps:
     1. Initialization: Wait for requests
     2.  if request is received, then

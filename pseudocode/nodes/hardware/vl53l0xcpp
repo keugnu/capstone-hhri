@@ -7,4 +7,5 @@ Output:
 	ir_sense
 Steps:
 	1. Initialization: Send read request to I2C Bus Manager
-	2. Publish ir_sense to tpc_tracker (10Hz)
+	2. Convert mm to cm
+	3. Publish ir_sense to tpc_tracker (10Hz)

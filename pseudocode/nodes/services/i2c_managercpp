@@ -19,6 +19,6 @@ Steps:
 							if request succeeds, then
 								(a) return true
 							else:
-								(a) increase priotity by 1
+								(a) increase priority by 1
 								(b) place request back onto queue
 								(c) return false
