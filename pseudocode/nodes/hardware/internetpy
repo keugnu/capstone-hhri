@@ -1,13 +1,22 @@
 Node:	internet (internet communication node)
 Input:
-	http
+	uint16 request
+Config:
+	0x00	Request for temperature		(srv_temp)
+	0x01	Request for text to speech	(srv_tts)
+	0x02	Request for shake head "no"	(srv_shake_no)
+	0x03	Request for _
+	...
+	0xFF	Request for _
+	Request endpoint https://ec2.webserver.aws.com/api/request
 Output:
-	Depends upon what behavior node needs notification
-	Turning head behavior: data to servo controller
-	Report temperature: audio stating temperature to speaker
-	Speak certain statement: audio from typed statement to speaker	
+	None
 Steps:
-	1. Initialization: Begin publishing to selected topic (10Hz)
-	2. if a request is made for a measurement/statement then
-		(a) provide measurement to svc_int
+	1. 	Initialization: Begin sending HTTP GET to Request endpoint (2Hz)
+	2. 	if request is not NULL, then
+			(a) make a request to the appropriate service node
+	3. 	if request is == past request, then
+			(a) continue
+		else: 
+			(a) make a request to the appropriate service node
 

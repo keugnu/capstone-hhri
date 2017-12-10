@@ -1,10 +1,16 @@
 Node:	shake_head (Motion response representing "no")
 Input:
-	String question
+	String speech
+Config:
+	keyword ["hate","no","shut up"]
 Output:
-	Data to servo controller to move servo motor.
+	bool success
 Steps:
 	Initialization: begin subscribing to tpc_speech (10Hz)
-	1. Initialization: data to center head on body (servo moves head to face front and center).
-	2. if response to question is "false" then
-		(a) Output data to controller to have robot shake head
+	1. 	if keyword is detected, then
+			(a) Make a request to srv_head_movement (40)
+			(b) Make a request to srv_head_movement (140)
+			(c) Make a request to srv_head_movement (40)
+			(d) Make a request to srv_head_movement (140)
+			(e) Make a request to srv_head_movement (90)
+			(f) Return true

@@ -1,24 +1,23 @@
 Node:	i2c_manager
-Config:
-	int16 address
 Input:
-	int32 read
-	int32 write
-	int32 read/write
+	char type ['R','W']
+	int16 address
+	... (variadic)
+Config:
+	int8 address
 Output:
-	bool closed
+	bool success
 Steps:
-	1. Initialization: Check if bus is able to be opened else exit(1)
-	2. if request exists, place on queue
-	3. else
-		(a) serve that request:
-	4. if request made to write to bus then
-		if nothing else on queue then
-			(a) write data to address
-	5. else if request made to read from bus then
-		if nothing else on queue then
-			(a) read data from address
-	6. else if request made to read from and write to bus then
-		if nothing else on queue then
-			(a) read data from address
-			(b) write data to address
+	1. 	Initialization: Check if bus is able to be opened else exit(1)
+	2.	Wait for request
+	3. 	if request exists, then
+			(a) place on request queue
+	4.	if queue is not empty
+			(a) serve top request
+				(i) 	Determine type and use address to find required args
+				(ii)	Perform request
+	5.	if request failed, then
+			(a) return true
+		else
+			(a) Place request back onto queue
+			(b) return false
