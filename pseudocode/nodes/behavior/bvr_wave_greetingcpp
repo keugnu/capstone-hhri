@@ -1,18 +1,16 @@
-
 Node:	wave_greeting (Speech response to waving gesture)
 Input:
-	struct xz[]
-Config: 
-	x.proximity: 
-		center: 120
-		max to the right: 240
-		max to the left: 0
-	Gesture wave:
-		z.proximity is within 5% of all z.proximity in xz
-		x.proximity begins rising and then starts falling, then rises and falls again
+	uint8 gesture[]
+Config:
+	enum GestureType {
+		RIGHT_SWIPE = 0x01,
+		LEFT_SWIPE = 0x02,
+		NO_GESTURE = 0xFF
+	}
+	uint16 sum (sum of pairs within the gesture input list)
 Output:
 	None
 Steps:
 	1. Initialization: Begin subscribing to tpc_gesture (100Hz)
-	2. if wave is detected, then
-		(a) send request to srv_speaker ("Hello")
+	2. if sum value equals 0x03
+		(a) Send request to srv_speaker ("Hello").

@@ -1,11 +1,18 @@
-Node:	zxgesture_pub (Gesture sensor)
+Node:	zxgesture_pub (Gesture sensor, GestureType is an enumeration for possible gestures)
 Input:
 	None
 Config:
 	int16 address
-	struct xz { int8 x_proximity, uint8 z_proximity }
+	uint8 gesture { (enum) GestureType }
+	
+	enum GestureType {
+		RIGHT_SWIPE = 0x01,
+		LEFT_SWIPE = 0x02,
+		NO_GESTURE = 0xFF
+	}
 Output:
-	struct xz	(cm)
+	uint8 gesture
 Steps:
 	1. Initialization: Send read request to I2C bus manager node
-	2. Publish xz to tpc_gesture  (100Hz)
+	2. Publish gesture to tpc_gesture  (100Hz)
+	
