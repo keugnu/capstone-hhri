@@ -2,12 +2,12 @@ Node:	internet (internet communication node)
 Input:
 	uint16 request
 Config:
-	0x00	Request for temperature		(srv_temp)
-	0x01	Request for text to speech	(srv_tts)
-	0x02	Request for shake head "no"	(srv_shake_no)
-	0x03	Request for _
+	0x0000	Request for temperature		(srv_temp)
+	0x0001	Request for text to speech	(srv_tts)
+	0x0002	Request for shake head "no"	(srv_shake_no)
+	0x0003	Request for _
 	...
-	0xFF	Request for _
+	0xFFFF	Request for _
 	Request endpoint https://ec2.webserver.aws.com/api/request
 Output:
 	None

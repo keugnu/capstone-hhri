@@ -1,5 +1,6 @@
 Node:   head_movement
 Input:
+    char ['T','M']  (Track, Movement)
     int16 degrees
 Config:
     max right: 180 degrees
@@ -10,8 +11,8 @@ Output:
 Steps:
     Initialization: Wait for service requests
     1.  if a request is received, then
-            if request type is Track (T), then
-                (a) get current position by making a request to the I2S Bus Manager (R,addr)
-                (b) send request to I2S Bus Manager (W,addr,current+degrees)
+            if request type is T, then
+                (a) get current position of the servo by making a request to the I2C Bus Manager (R,addr)
+                (b) send request to I2C Bus Manager (W,addr,current+degrees)
             else
-                (a) send request to I2S Bus Manager (W,addr,degrees)
+                (a) send request to I2C Bus Manager (W,addr,degrees)
