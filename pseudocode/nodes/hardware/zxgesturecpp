@@ -3,10 +3,9 @@ Input:
 	None
 Config:
 	int16 address
-	struct xy { uint8 x_proximity, uint8 z_proximity }
+	struct xz { int8 x_proximity, uint8 z_proximity }
 Output:
-	struct xz[]	(cm)
+	struct xz	(cm)
 Steps:
-	1. Initialization: Send read request to I2C bus manager node (100Hz)
-	2. Publish xz to tpc_gesture
-	
+	1. Initialization: Send read request to I2C bus manager node
+	2. Publish xz to tpc_gesture  (100Hz)

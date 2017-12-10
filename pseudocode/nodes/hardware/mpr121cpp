@@ -6,5 +6,5 @@ Config:
 Output:
 	uint16 touch
 Steps:
-	1. Initialization: Send read request to I2C bus manager node (10Hz)
-	2. publish touch to tpc_touch
+	1. Initialization: Send read request to I2C bus manager node
+	2. publish touch to tpc_touch (10Hz)
