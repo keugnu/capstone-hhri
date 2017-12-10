@@ -1,14 +1,18 @@
 
 Node:	wave_greeting (Speech response to waving gesture)
 Input:
-	float32 x
-	float32 z
+	struct xz[]
 Config: 
-	Gesture: hand moving left-to-right and immediately right-to-left over gesture sensor.
+	x.proximity: 
+		center: 120
+		max to the right: 240
+		max to the left: 0
+	Gesture wave:
+		z.proximity is within 5% of all z.proximity in xz
+		x.proximity begins rising and then starts falling, then rises and falls again
 Output:
-	String greeting //"Hello"
+	None
 Steps:
-	1. Initialization: begin subscribing to tpc_gesture (100Hz)
-	2. Recognize if input from gesture sensor matches config.
-	3. Send greeting audio to speaker.
-
+	1. Initialization: Begin subscribing to tpc_gesture (100Hz)
+	2. if wave is detected, then
+		(a) send request to srv_speaker ("Hello")
