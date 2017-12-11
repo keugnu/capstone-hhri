@@ -10,11 +10,15 @@ Config:
 Output:
 	None
 Steps:
-	Initialization: request temperature from svc_temp
-	1. Initialization: control temperature is 30.0 degrees.
-	2. if temperature is greater than or equal to 30.0 then:
+	1. Initialization: Begin subscribing to tpc_speech (100Hz)
+	2. if keyword is detected, then send request to srv_temp
+	3. if temperature is greater than or equal to 30.0 then:
 		(a) Send request to srv_speaker ("It is Hot")
 		(b) Publish hot_color to tpc_colors
-	3. else if temperature is less than 30.0 then:
+	4. else if temperature is less than 30.0 then:
 		(a) Send request to srv_speaker ("It is not hot")
 		(b) Publish cold_color to tpc_colors
+
+
+
+Waiting on speech recognition package details

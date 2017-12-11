@@ -10,7 +10,7 @@ Output:
 Steps:
 	1. 	Initialization: Send write request to I2C bus manager node
 			(a) Set LEDs to off by setting pwm_freq_r, pwm_freq_g, pwm_freq_b to 0.0
-	2. 	Subscribe to tpc_colors (10Hz)
+	2. 	Subscribe to tpc_colors (2Hz)
 	3. 	if a change is detected on tpc_colors then
 			(a) Send write request to I2C bus manager node
 				(i) 	if color is "red" then pwm_freq_r = 4096, pwm_freq_g = 0, pwm_freq_b = 0

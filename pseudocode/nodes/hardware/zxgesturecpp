@@ -14,5 +14,5 @@ Output:
 	uint8 gesture
 Steps:
 	1. Initialization: Send read request to I2C bus manager node
-	2. Publish gesture to tpc_gesture  (100Hz)
+	2. Publish gesture to tpc_gesture (10Hz)
 	
