@@ -3,6 +3,7 @@ Input:
 	uint8 address
 	char request[25]
 	char data[16]
+	int datasize
 Config:
 	request	:	request[0] 		type
 				request[1-8]	register 1

@@ -1,7 +1,9 @@
 Node:	spi_manager
 Input:
+	uint address
 	char request[25]
 	char data[16]
+	int datasize
 Config:
 	SPI_DEV = "/dev/spidev3.0"
 	request	:	request[0] 		type

@@ -10,5 +10,3 @@ Steps:
 	2. if pressure is greater than 5lbs/sq. in., then:
 		(a) send request to srv_speaker (hug_response)
 		(b) Publish happy_color to tpc_colors
-		
-		
