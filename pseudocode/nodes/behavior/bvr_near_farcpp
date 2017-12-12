@@ -1,0 +1,14 @@
+Node:	bvr_near_far (Speech response to person getting too close)
+Input:
+	None
+Config: 
+	from srv_sonar:
+		proximity < 100cm 	"Near"
+					o/w 	"Far"
+Output:
+	String near_far ["Near", "Far"]
+Steps:
+	1. Initialization: Being subscribing to tpc_sonar (10Hz)
+	2. if proximity is <= to 30cm then:
+		(a) near_far = "You are getting too close"
+		(b) send request to srv_speaker (near_far)
