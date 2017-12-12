@@ -1,24 +1,33 @@
 Node:	spi_manager
-Config:
-	int8 slave
 Input:
-	int32 read
-	int32 write
-	int32 read/write
+	uint address
+	char request[25]
+	char data[16]
+	int datasize
+Config:
+	SPI_DEV = "/dev/spidev3.0"
+	request	:	request[0] 		type
+				request[1-8]	register 1
+				request[9-24]	register 2
+	data	:	data[0-7]		upper bits
+				data[8-15]		lower bits
 Output:
-	bool closed
+	bool success
+	char data[]
 Steps:
 	1. Initialization: Check if bus is able to be opened else exit(1)
-	2. if request exists, place on queue	
-	3. else
-		(a) serve that request:
-	4. if request made to write to bus then
-		if nothing else on queue then
-			(a) write data to slave
-	5. else if request made to read from bus then
-		if nothing else on queue then
-			(a) read data from slave
-	6. else if request made to read from and write to bus then
-		if nothing else on queue then
-			(a) read data from slave
-			(b) write data to slave
+	2. if new request exists, then
+		(a) place request on queue
+	3. if queue is not empty
+		(a) sort queue based on priority
+		(b) serve top request
+			(i) if type of request is R (read), then
+					(A) read registers in request[] and set data[]
+					(B) return data
+				elsif write request succeeds, then
+					(A) return true
+				else
+					(A) increase priority by 1
+					(B) place request back onto queue
+					(C) return false
+

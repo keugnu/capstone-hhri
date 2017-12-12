@@ -8,4 +8,4 @@ Output:
 Steps:
 	1. Initialization: Send read request to SPI Bus Manager
 	2. Convert uint16 data from ADC to pounds (float32)
-	3. Publish pressure_sensor to tpc_force (10Hz)
+	3. Publish pressure_sensor to tpc_pressure (10Hz)

@@ -1,24 +1,32 @@
 Node:	i2c_manager
 Input:
-	char type ['R','W']
 	uint8 address
-	... (variadic)
+	char request[25]
+	char data[16]
+	int datasize
 Config:
-	uint8 address
+	request	:	request[0] 		type
+				request[1-8]	register 1
+				request[9-24]	register 2
+	data	:	data[0-7]		upper bits
+				data[8-15]		lower bits
 Output:
 	bool success
+	char data[]
 Steps:
 	1. 	Initialization: Check if bus is able to be opened else exit(1)
 	2.	Wait for request
 	3. 	if request exists, then
-			(a) place on request queue
+		(a) place on request queue
 	4.	if queue is not empty
-			(a) serve top request
-				(i) 	Determine type and use address to find required args
-				(ii)	Perform request
-							if request succeeds, then
-								(a) return true
-							else:
-								(a) increase priority by 1
-								(b) place request back onto queue
-								(c) return false
+		(a) sort the queue on priority
+		(b) serve top request
+			(i)	if request is type R, then
+					(A) read register(s) in request[] and set data[]
+					(B) return data
+				elseif write request succeeds, then
+					(A) return true
+				else:
+					(A) increase priority by 1
+					(B) place request back onto queue
+					(C) return false
