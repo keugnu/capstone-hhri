@@ -11,6 +11,6 @@ Config:
 Output:
 	None
 Steps:
-	1. Initialization: Begin subscribing to tpc_gesture (10Hz)
+	1. Initialization: Begin subscribing to tpc_gesture (100Hz)
 	2. if sum value equals 0x03
 		(a) Send request to srv_speaker ("Hello").
