@@ -19,6 +19,7 @@ Please enter a command:
     4)  Exit the program
 """
 
+API_URI = 'http://localhost.com:5000'
 VALID_COMMANDS = {
     1: 'readsonar',
     2: 'speak',
@@ -26,22 +27,15 @@ VALID_COMMANDS = {
 }
 
 
-def start_logging():
-    # log_format = logging.Formatter('%(asctime)s : %(levelname)s | %(name)s\t %(message)s')
-    logging.basicConfig(filename='robot_app.log',
-                        level=logging.DEBUG,
-                        format='%(asctime)s : %(levelname)s\t %(message)s')
-
-
 def send_command(user_input, tts=None):
     logger = logging.getLogger(__name__)
     
     if tts is not None:
         logger.info('Sending POST request with data %s ', tts)
-        req = requests.post('http://localhost:5000/api/speak', data={'speech':tts})
+        req = requests.post(''.join([API_URI, '/api/speak']), data={'speech':tts})
     else:
         logger.info('Sending GET request for \"%s\" command.', user_input)
-        req = requests.get('http://localhost:5000/api/{}'.format(VALID_COMMANDS.get(user_input)))
+        req = requests.get(''.join([API_URI, '/api/', VALID_COMMANDS.get(user_input)]))
     
     return req.status_code
 
@@ -56,9 +50,6 @@ def check_input(user_input):
     elif not user_input in VALID_COMMANDS:
         logger.warning('User input %s is not a valid command.', user_input)
         sys.stdout.write('Your input is not a valid command. Try again: ')
-    # elif not len(str(user_input)) == 1:
-    #     logger.warning('User input %s is not a valid command.', user_input)
-    #     print('Your input is not valid. Try again...')
     else:
         logger.info('User input %s was accepted.', user_input)
         if user_input == 2:
@@ -72,7 +63,7 @@ def check_input(user_input):
 
 
 def main():
-    start_logging()
+    # start_logging()
     logger = logging.getLogger(__name__)
     logger.info('Application has started.')
     
