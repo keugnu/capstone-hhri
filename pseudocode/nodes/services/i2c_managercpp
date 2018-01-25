@@ -1,18 +1,13 @@
 Node:	i2c_manager
 Input:
-	uint8 address
-	char request[25]
-	char data[16]
-	int datasize
+	signed char[] request
 Config:
-	request	:	request[0] 		type
+	request	:	request[0] 		type (1: write|0: read)
 			request[1-8]		register 1
-			request[9-24]		register 2
-	data	:	data[0-7]		upper bits
-			data[8-15]		lower bits
+			request[9-16]		byte to write if type=1 o/w 0
 Output:
 	bool success
-	char data[]
+	signed char[] data
 Steps:
 	1. 	Initialization: Check if bus is able to be opened else exit(1)
 	2.	Wait for request
