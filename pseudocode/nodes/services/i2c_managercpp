@@ -3,8 +3,9 @@ Input:
 	signed char[] request
 Config:
 	request	:	request[0] 		type (1: write|0: read)
-			request[1-8]		register 1
-			request[9-16]		byte to write if type=1 o/w 0
+			request[1-8]		device address
+			request[9-16]		register address
+			request[17-25]		byte to write if type=1 o/w 0
 Output:
 	bool success
 	signed char[] data
