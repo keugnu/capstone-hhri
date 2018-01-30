@@ -6,8 +6,8 @@ import sys
 import logging
 from flask import Flask, request
 
-COMMAND_FILE_PATH = r'/home/stephen/Projects/capstone-hhri/hbs/api/command'
-SPEECH_KW_PATH = r'/home/stephen/Projects/capstone-hhri/hbs/api/tts'
+COMMAND_FILE_PATH = r'/home/stephen/Projects/capstone-hhri/hbs/api/command.bin'
+SPEECH_KW_PATH = r'/home/stephen/Projects/capstone-hhri/hbs/api/tts.txt'
 app = Flask(__name__)
 
 
