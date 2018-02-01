@@ -57,7 +57,7 @@ def speak():
             cmd_file.write(b'\x02')
             logger.info('Wrote x02 to command file.')
         with open(SPEECH_KW_PATH, 'w') as spch_file:
-            spch_file.write(request.args.get('tts'))
+            spch_file.write(request.args['tts'] + '\n')
         return b'\x00'
     else:
         logger.error('Could not write to command file')
