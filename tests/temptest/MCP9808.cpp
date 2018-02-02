@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
 	config[1] = 0x03;
 	write(file, config, 2);
 	sleep(1);
-
+	while(true) {
 	// Read 2 bytes of data from register(0x05)
 	// temp msb, temp lsb
 	char reg[1] = {0x05};
@@ -53,7 +53,9 @@ int main(int argc, char *argv[])
 		float fTemp = cTemp * 1.8 + 32;
 
 		// Output data to screen
-		printf("Temperature in Celsius is : %.2f C \n", cTemp);
-		printf("Temperature in Fahrenheit is : %.2f F \n", fTemp);
+		printf("MCP Temperature in Celsius is : %.2f C \n", cTemp);
+		printf("MCP Temperature in Fahrenheit is : %.2f F \n", fTemp);
+	}
+	sleep(2);
 	}
 }

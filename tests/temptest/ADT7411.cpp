@@ -39,7 +39,8 @@ int main(int argc, char *argv[]) {
     sleep(1);
 
     int8_t lsb, msb;
-    
+
+while(true) {    
     // Read LSB using internal temperature sensor
     char reg[1] = {0x03};
     char data[1] = {0};
@@ -63,7 +64,8 @@ int main(int argc, char *argv[]) {
     float temp = ((msb << 2) + lsb) * 0.25;
     float ftemp = temp * 1.8 + 32;
 
-    printf("Temperature in Celsius: %.2f C \n", temp);
-    printf("Temperature in Fahrenheit: %.2f F \n", ftemp);
-
+    printf("ADT Temperature in Celsius: %.2f C \n", temp);
+    printf("ADT Temperature in Fahrenheit: %.2f F \n", ftemp);
+    sleep(2);
+}
 }
