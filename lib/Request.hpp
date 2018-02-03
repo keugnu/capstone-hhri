@@ -5,9 +5,9 @@
 
 #include <vector>
 
-class Request() {
+class Request {
     private:
-        signed char _id;
+        char _id;
         std::string _type;
         bool _status;
 	int _size;
@@ -16,11 +16,12 @@ class Request() {
         std::vector<signed char> data;
 	
         Request(const std::vector<signed char>, int);
-        signed char get_id();
-        signed char get_type();
+        char get_id();
+        std::string get_type();
         bool get_status();
 	void set_status(bool);
 	int get_size();
+	int get_expected();
 };
 
 Request::Request(const std::vector<signed char> req, int num_bytes) {
@@ -45,9 +46,9 @@ Request::Request(const std::vector<signed char> req, int num_bytes) {
 int Request::get_size() { return _size; }
 int Request::get_expected() { return _expected; }
 bool Request::get_status() { return _status; }
-signed char Request::get_id() { return _id; }
-signed char Request::get_type() { return _type; }
-void set_status(bool status) { _status = status; }
+char Request::get_id() { return _id; }
+std::string Request::get_type() { return _type; }
+void Request::set_status(bool status) { _status = status; }
 
 
 #endif
