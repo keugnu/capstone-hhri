@@ -10,7 +10,7 @@
 int main(int argc, char *argv[]) {
     // Create i2c bus
     int file;
-    char *bus = "/dev/i2c-1";
+    char *bus = "/dev/i2c-0";
     if ((file = open(bus, O_RDWR)) < 0) {
 	printf("Failed to open the bus. \n");
 	exit(1);
@@ -47,8 +47,9 @@ while(true) {
     write(file, reg, 1);
     if(read(file, data, 1) != 1) {
 	printf("LSB I/O error \n");
+	exit(1);
     }
-    
+  
     lsb = data[0]%4;
     
     // Read MSB using internal temperature sensor
@@ -56,6 +57,7 @@ while(true) {
     write(file, reg, 1);
     if(read(file, data, 1) != 1) {
 	printf("MSB I/O error \n");
+	exit(1);
     }
 
     msb = data[0];
@@ -66,6 +68,7 @@ while(true) {
 
     printf("ADT Temperature in Celsius: %.2f C \n", temp);
     printf("ADT Temperature in Fahrenheit: %.2f F \n", ftemp);
-    sleep(2);
+    temp = 0; ftemp = 0;
+    usleep(200000);
 }
 }
