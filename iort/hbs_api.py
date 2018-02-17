@@ -10,6 +10,13 @@ COMMAND_FILE_PATH = r'/home/stephen/Projects/capstone-hhri/hbs/api/command.bin'
 SPEECH_KW_PATH = r'/home/stephen/Projects/capstone-hhri/hbs/api/tts.txt'
 app = Flask(__name__)
 
+""" Error return 0
+    Success return 255
+    Requests:
+        1   :   readsonar
+        2   :   speak
+        3   :   shakehead
+"""
 
 @app.route('/api')
 def index():
@@ -20,11 +27,11 @@ def index():
 def get_command():
     if os.path.exists(COMMAND_FILE_PATH):
        with open(COMMAND_FILE_PATH, 'rb') as cmd_file:
-            logger.info('Wrote x03 to command file.')
+            logger.info('Reading from command file.')
             return cmd_file.read(1)
     else:
-        logger.error('Could not write to command file')
-        return b'\xFF'
+        logger.error('Command file does not exist.')
+        return b'\x00'
 
 
 @app.route('/api/gettts')
@@ -34,47 +41,38 @@ def get_tts():
             logger.info('Reading from tts file.')
             return spch_file.readline()
     else:
-        logger.error('Could not read from tts file.')
-        return b'\xFF'
+        logger.error('TTS file does not exist.')
+        return b'\x00'
 
 
 @app.route('/api/readsonar')
 def read_sonar():
-    if os.path.exists(COMMAND_FILE_PATH):
-        with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
-            cmd_file.write(b'\x01')
-            logger.info('Wrote x01 to command file.')
-        return b'\x00'
-    else:
-        logger.error('Could not write to command file')
-        return b'\xFF'
+    logger.info("Request to read sonar sensor has been made.")
+    with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
+        logger.info('Writing 0x01 to command file.')
+        cmd_file.write(b'\x01')
+    return b'\xFF'
 
 
 @app.route('/api/speak')
 def speak():
-    if os.path.exists(COMMAND_FILE_PATH):
-        with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
-            cmd_file.write(b'\x02')
-            logger.info('Wrote x02 to command file.')
-        with open(SPEECH_KW_PATH, 'w') as spch_file:
-            spch_file.write(request.args['tts'] + '\n')
-        return b'\x00'
-    else:
-        logger.error('Could not write to command file')
-        return b'\xFF'
+    logger.info('Request to use TTS has been made')
+    with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
+        logger.info('Writing 0x02 to command file.')
+        cmd_file.write(b'\x02')
+    with open(SPEECH_KW_PATH, 'w') as spch_file:
+        logger.info('Writing \"%s\" to TTS file.', request.args['tts'])
+        spch_file.write(request.args['tts'] + '\n')
+    return b'\xFF'
 
 
 @app.route('/api/shakehead')
 def shake_head():
     logger.info('Request to shake head has been made.')
-    if os.path.exists(COMMAND_FILE_PATH):
-        with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
-            cmd_file.write(b'\x03')
-            logger.info('Wrote x03 to command file.')
-        return b'\x00'
-    else: 
-        logger.error('Could not write to command file')
-        return b'\xFF'
+    with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
+        logger.info('Writing 0x03 to command file.')
+        cmd_file.write(b'\x03')
+    return b'\xFF'
 
 
 if __name__ == '__main__':
