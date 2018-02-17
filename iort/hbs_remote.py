@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Author(s): Stephen Brooks
 
 import os
@@ -19,7 +19,7 @@ Please enter a command:
     4)  Exit the program
 """
 
-API_URI = 'http://localhost:5000'
+API_URI = 'http://34.212.22.223:5000'
 VALID_COMMANDS = {
     1: 'readsonar',
     2: 'speak',
@@ -32,7 +32,7 @@ def send_command(user_input, tts=None):
     
     if tts is not None:
         logger.info('Sending GET request with data %s ', tts)
-        req = requests.get(''.join([API_URI, '/api/speak?', tts]))
+        req = requests.get(''.join([API_URI, '/api/speak?tts=', tts]))
     else:
         logger.info('Sending GET request for \"%s\" command.', user_input)
         req = requests.get(''.join([API_URI, '/api/', VALID_COMMANDS.get(user_input)]))
