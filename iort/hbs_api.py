@@ -6,8 +6,8 @@ import sys
 import logging
 from flask import Flask, request
 
-COMMAND_FILE_PATH = r'/home/stephen/Projects/capstone-hhri/hbs/api/command.bin'
-SPEECH_KW_PATH = r'/home/stephen/Projects/capstone-hhri/hbs/api/tts.txt'
+COMMAND_FILE_PATH = r'/home/ubuntu/.git/capstone-hhri/hbs/api/command.bin'
+SPEECH_KW_PATH = r'/home/ubuntu/.git/capstone-hhri/hbs/api/tts.txt'
 app = Flask(__name__)
 
 """ Error return 0
@@ -81,4 +81,4 @@ if __name__ == '__main__':
                         format='%(asctime)s : %(levelname)s\t %(message)s')
     logger = logging.getLogger(__name__)
     logger.info('API starting.')
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
