@@ -19,7 +19,7 @@ Please enter a command:
     4)  Exit the program
 """
 
-API_URI = 'http://localhost.com:5000'
+API_URI = 'http://localhost:5000'
 VALID_COMMANDS = {
     1: 'readsonar',
     2: 'speak',
@@ -31,8 +31,8 @@ def send_command(user_input, tts=None):
     logger = logging.getLogger(__name__)
     
     if tts is not None:
-        logger.info('Sending POST request with data %s ', tts)
-        req = requests.post(''.join([API_URI, '/api/speak']), data={'speech':tts})
+        logger.info('Sending GET request with data %s ', tts)
+        req = requests.get(''.join([API_URI, '/api/speak?', tts]))
     else:
         logger.info('Sending GET request for \"%s\" command.', user_input)
         req = requests.get(''.join([API_URI, '/api/', VALID_COMMANDS.get(user_input)]))
