@@ -28,7 +28,7 @@ def get_command():
     if os.path.exists(COMMAND_FILE_PATH):
        with open(COMMAND_FILE_PATH, 'rb') as cmd_file:
             logger.info('Reading from command file.')
-            return cmd_file.read(1)
+            return "Hello World"
     else:
         logger.error('Command file does not exist.')
         return b'\x00'
