@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 	unsigned char data[10];
 	// Create I2C bus
 	int file;
-	char *bus = "/dev/i2c-1";
+	char const *bus = "/dev/i2c-1";
 	if ((file = open(bus, O_RDWR)) < 0) {
 		printf("Failed to open the bus. \n");
 		exit(1);
@@ -33,11 +33,12 @@ int main(int argc, char *argv[]) {
 	    data[0] = 0x00;
 	    data[1] = 0x51;
 	    write(file, data, 2);
-	    usleep(900000);
+	    usleep(100);
 
 	    // Register to read from
 	    data[0] = 0x00;
 	    write(file, data, 1);
+	    usleep(70000);
 	    
 	    if(read(file, data, 4) != 4) {
 		printf("Error : Input/Output error \n");
@@ -51,8 +52,7 @@ int main(int argc, char *argv[]) {
 		range += low;
 
 		// Output data to screen
-		printf("SRF02 Range in centimeters : %.2f C \n", range);
+		printf("SRF02 Range in centimeters : %ucm \n", range);
 	    }
-	    usleep(900000);
 	}
 }
