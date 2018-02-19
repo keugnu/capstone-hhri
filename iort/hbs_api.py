@@ -6,8 +6,8 @@ import sys
 import logging
 from flask import Flask, request
 
-COMMAND_FILE_PATH = r'/home/ubuntu/.git/capstone-hhri/hbs/api/command.bin'
-SPEECH_KW_PATH = r'/home/ubuntu/.git/capstone-hhri/hbs/api/tts.txt'
+COMMAND_FILE_PATH = r'/opt/.git/capstone-hhri/iort/hbs/api/command.bin'
+SPEECH_KW_PATH = r'/opt/.git/capstone-hhri/iort/hbs/api/tts.txt'
 app = Flask(__name__)
 
 """ Error return 0
@@ -28,7 +28,7 @@ def get_command():
     if os.path.exists(COMMAND_FILE_PATH):
        with open(COMMAND_FILE_PATH, 'rb') as cmd_file:
             logger.info('Reading from command file.')
-            return "Hello World"
+            return cmd_file.read(1)
     else:
         logger.error('Command file does not exist.')
         return b'\x00'
