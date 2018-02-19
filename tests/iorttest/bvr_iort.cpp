@@ -1,3 +1,7 @@
+// LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+// g++ -g --std=c++11 -Werror -I/usr/include bvr_iort.cpp -L/usr/local/lib -lcurlpp -lcurl -o bvr_iort
+
+
 #include <cstdlib>
 #include <cstring>
 #include <string>
@@ -48,6 +52,7 @@ size_t WriteMemoryCallback(char* ptr, size_t size, size_t nmemb)
 
 int rest_req() {
     char const* url = "http://127.0.0.1/api/getcommand";
+    char const* url_tts = "http://127.0.0.1/api/gettts";
     
     curlpp::Cleanup cleaner;
     curlpp::Easy request;
@@ -67,13 +72,20 @@ int rest_req() {
     request.perform();
 
     long resp_code; 
+    int resp_cmd = (int)m_pBuffer[0];
     curlpp::infos::ResponseCode::get(request, resp_code);
     std::cout << "Response Code: " << resp_code << std::endl << std::endl;
 
     std::cout << "Size: " << m_Size << std::endl;
-    std::cout << "Content: " << std::endl << m_pBuffer << std::endl;
+    std::cout << "Content: " << std::endl << resp_cmd << std::endl;
 
-    std::cout << resp.str() << std::endl;
+    if (resp_cmd == 2) {
+        request.curlpp::Easy::setOpt(curlpp::options::Url(url_tts));
+        request.perform();
+        curlpp::infos::ResponseCode::get(request, resp_code);
+        std::cout << "Content: " << std::endl << ++m_pBuffer << std::endl;
+    }
+
     return resp_code;
 }
 
