@@ -12,6 +12,7 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <stdint.h>
 
 int main(int argc, char *argv[]) {
 
@@ -78,7 +79,7 @@ int main(int argc, char *argv[]) {
 
     while(true) {
 
-	uint16_t wasTouched = 0x0000, currentlyTouched[2] = {0x0000}, cTouched;
+	uint16_t wasTouched = 0x0000, currentlyTouched[2] = {0x0000}, cTouched = 0;
 	buff[0] = 0x00; // Touch status register
 	write(file, buff, 1);
 	read(file, currentlyTouched, 2);
@@ -87,29 +88,16 @@ int main(int argc, char *argv[]) {
 	cTouched &= 0x0FFF;
 
 	for(int i = 0; i < 12; i++) {
-	    // if touched and wasn't touched before
-	    // TODO: get indidivial bit value that represents each pin on the board
-	    if (cTouched && !wasTouched)
+	    if ((cTouched & (1 << i)) && !(wasTouched & (1 << i)))
 		printf("Pin %i was touched.\n", i);
-	    if (!cTouched && wasTouched)
+	    if (!(cTouched & (1 << i)) && (wasTouched & (1 << i)))
 		printf("Pin %i was released.\n", i);
 	}
 
 	wasTouched = cTouched;
-
+	usleep(50000);
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
 }
 
