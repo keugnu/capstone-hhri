@@ -70,6 +70,7 @@ bool handle_req(hbs2::i2c_bus::Request &req, hbs2::i2c_bus::Response &res) {
 	completed_queue.pop();
 	return true;
     }
+    else { work_queue.push(Request); }
     
     if (!work_queue.empty()) {
 
