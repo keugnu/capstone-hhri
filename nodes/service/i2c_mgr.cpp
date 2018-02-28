@@ -23,15 +23,15 @@ std::queue<Request> work_queue, completed_queue;
 bool write_req(Request* job) {
     if (fd = open(iic_dev, O_RDWR) < 0) { return false; }
     else {
-	char to_write[job->get_size() + 1] = {0};
-	to_write[0] = job->get_id();
-	for (int i = 1; i < job->data.size(); i++) {
+	char to_write[job->data.size()] = {0};
+	char dev_addr = job->get_id();
+	for (int i = 0; i < job->data.size(); i++) {
 	    to_write[i] = job->data.at(i);
 	}
 
-	ioctl(fd, I2C_SLAVE, to_write[0]);
+	ioctl(fd, I2C_SLAVE, dev_addr);
 
-	if (write(fd, to_write, job->get_size()) != job->get_size()) { return false; }
+	if (write(fd, to_write, job->data.size()) != job->data.size()) { return false; }
     }
 
     job->set_status(true);
@@ -41,20 +41,23 @@ bool write_req(Request* job) {
 bool read_req(Request* job) {
     if (fd = open(iic_dev, O_RDWR) < 0) { return false; }
     else {
-	char is_read[job->get_expected()] = {0};
-        is_read[0] = job->get_id();
-        for (int i = 1; i < job->data.size(); i++) {
+	char is_read[job->data.size()] = {0};
+        char dev_addr = job->get_id();
+        for (int i = 0; i < job->data.size(); i++) {
             is_read[i] = job->data.at(i);
         }
 
-        ioctl(fd, I2C_SLAVE, is_read[0]);
+        ioctl(fd, I2C_SLAVE, dev_addr);
 
-	if (read(fd, is_read, job->get_expected()) != job->get_expected()) { return false; }
+	if (read(fd, is_read, job->data.size()) != job->data.size()) { 
+	    return false; 
+	} else {
+	    res.data = is_read;
+	    job->set_status(true);
+	    return true;
+	}
 
     }
-
-    job->set_status(true);	
-    return true;
 }
 
 bool handle_req(hbs2::i2c_bus::Request &req, hbs2::i2c_bus::Response &res) {
@@ -70,7 +73,7 @@ bool handle_req(hbs2::i2c_bus::Request &req, hbs2::i2c_bus::Response &res) {
 	completed_queue.pop();
 	return true;
     }
-    else { work_queue.push(Request); }
+    else { work_queue.push(request); }
     
     if (!work_queue.empty()) {
 
