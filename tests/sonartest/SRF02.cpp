@@ -11,6 +11,7 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <iostream>
 
 int main(int argc, char *argv[]) {
 
@@ -45,7 +46,7 @@ int main(int argc, char *argv[]) {
 	    } else {
 		// Shift the high byte (data[2]) to be higher 8 bits
 		unsigned char high = data[2];
-		unsigned char low = data[3];
+		unsigned int low = data[3];
 	        unsigned int range = high;
 		range <<= 8;
 		// Set lower byte (data[3]) to be lower 8 bits
