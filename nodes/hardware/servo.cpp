@@ -16,6 +16,7 @@
 	when the command is completed set res.response.success = true
 	the entire main function needs to be renamed for something like "handle_req" and it will do the verificaiton of input from the servce call
 	main will be used only for doing the ROS setup. if you want, review a service client that has already been written and copy the format
+	use the absolute path to the shell scripts and make them a global const string
 
 **********************************/
 
