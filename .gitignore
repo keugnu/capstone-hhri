@@ -4,5 +4,7 @@
 !*.h
 !*.py
 !*.sh
+!*/
+!*/nodes/*
 !*/nodes/hardware/*
 !*/nodes/hardware/lib/*
