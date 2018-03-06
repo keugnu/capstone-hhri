@@ -20,7 +20,7 @@ static char const* iic_dev = "/dev/i2c-1";
 std::queue<Request> work_queue, completed_queue;
 
 bool write_req(Request* job) {
-    ROS_INFO("Beginning write request.");
+    ROS_INFO("A write request has been made for device %u", job->get_id());
     if ((fd = open(iic_dev, O_RDWR)) < 0) { 
 	ROS_ERROR("Cannot open I2C bus."); 
 	return false;
@@ -45,7 +45,7 @@ bool write_req(Request* job) {
 }
 
 bool read_req(Request* job) {
-    ROS_INFO("A read request has been made.");
+    ROS_INFO("A read request has been made for device %u", job->get_id());
     if ((fd = open(iic_dev, O_RDWR)) < 0) {
 	ROS_ERROR("Failed to open I2C bus.");
 	return false;
@@ -62,7 +62,7 @@ bool read_req(Request* job) {
         ioctl(fd, I2C_SLAVE, dev_addr);
 
 	write(fd, is_read, 1);
-	sleep(1);
+	usleep(70000);
 
 	if (read(fd, read_reg, job->data.size()) != job->data.size()) { 
 	    ROS_ERROR("Failed to read from I2C bus.");
@@ -81,6 +81,7 @@ bool handle_req(hbs2::i2c_bus::Request &req, hbs2::i2c_bus::Response &res) {
     Request request = Request(req.request, req.size);
     
     if (request.get_type() == "status") {
+	ROS_INFO("A request has been made for the status of device %u", req.request[1]);
 	res.success = false;
 	for (int i = 0; i < completed_queue.size(); i++) {
 	    Request job = completed_queue.front();
@@ -120,8 +121,7 @@ int main(int argc, char **argv) {
     ros::NodeHandle n;
 
     ros::ServiceServer srv = n.advertiseService("i2c_srv", handle_req);
-    ROS_INFO("Ready to interact with i2c device.");
-
+    ROS_INFO("ROS I2c Bus Manager has started.");
     ros::spin();
     return 0;
 }
