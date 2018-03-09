@@ -69,40 +69,82 @@ bool touch_init(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
 
 // Set up registers (MHD, NHD, NCL, FDL, Debounce touch & release, Baseline tracking)
 bool reg_setup(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
-	srv.request.request.resize(4);
-	srv.request.size = 4;
-	srv.request.request = {0x02, 0x5A, 0x00, 0x00};
+    srv.request.request.resize(4);
+    srv.request.size = 4;
+    srv.request.request = {0x02, 0x5A, 0x00, 0x00};
 
-	// MHD rising reg 0x2B, NHD rising reg 0x2C, NCL rising reg 0x2D, FDL rising reg 0x2E
-	srv.request.request.data.at(2) = 0x2B; srv.request.request.data.at(3) = 0x01; 
-	srv.request.request.data.at(2) = 0x2C; srv.request.request.data.at(3) = 0x01; 
-	srv.request.request.data.at(2) = 0x2D; srv.request.request.data.at(3) = 0x01; 
-	srv.request.request.data.at(2) = 0x2E; srv.request.request.data.at(3) = 0x01; 
-
-    buff[0] = 0x2B, buff[1] = 0x01; write(file, buff, 2);
-    buff[0] = 0x2C, buff[1] = 0x01; write(file, buff, 2);
-    buff[0] = 0x2D, buff[1] = 0x0E; write(file, buff, 2);
-    buff[0] = 0x2E, buff[1] = 0x00; write(file, buff, 2);
+    // MHD rising reg 0x2B, NHD rising reg 0x2C, NCL rising reg 0x2D, FDL rising reg 0x2E
+    srv.request.request.data.at(2) = 0x2B; srv.request.request.data.at(3) = 0x01;
+    if (!client.call(srv)) { return false; }
+    srv.request.request.data.at(2) = 0x2C; srv.request.request.data.at(3) = 0x01; 
+    if (!client.call(srv)) { return false; }
+    srv.request.request.data.at(2) = 0x2D; srv.request.request.data.at(3) = 0x0E; 
+    if (!client.call(srv)) { return false; }
+    srv.request.request.data.at(2) = 0x2E; srv.request.request.data.at(3) = 0x00; 
+    if (!client.call(srv)) { return false; }
 
     // MHD falling reg, 0x2F, NHD falling reg 0x30, NCL falling reg 0x31, FDL falling reg 0x32
-    buff[0] = 0x2F, buff[1] = 0x01; write(file, buff, 2);
-    buff[0] = 0x30, buff[1] = 0x05; write(file, buff, 2);
-    buff[0] = 0x31, buff[1] = 0x01; write(file, buff, 2);
-    buff[0] = 0x32, buff[1] = 0x00; write(file, buff, 2);
+    srv.request.request.data.at(2) = 0x2F; srv.request.request.data.at(3) = 0x01; 
+    if (!client.call(srv)) { return false; }
+    srv.request.request.data.at(2) = 0x30; srv.request.request.data.at(3) = 0x05; 
+    if (!client.call(srv)) { return false; }
+    srv.request.request.data.at(2) = 0x31; srv.request.request.data.at(3) = 0x01; 
+    if (!client.call(srv)) { return false; }
+    srv.request.request.data.at(2) = 0x32; srv.request.request.data.at(3) = 0x00; 
+    if (!client.call(srv)) { return false; }
 
     // NHD touched reg 0x33, NCL touched 0x34, FDL touched 0x35
-    buff[0] = 0x33, buff[1] = 0x00; write(file, buff, 2);
-    buff[0] = 0x34, buff[1] = 0x00; write(file, buff, 2);
-    buff[0] = 0x35, buff[1] = 0x00; write(file, buff, 2);
+    srv.request.request.data.at(2) = 0x33; srv.request.request.data.at(3) = 0x00; 
+    if (!client.call(srv)) { return false; }
+    srv.request.request.data.at(2) = 0x34; srv.request.request.data.at(3) = 0x00; 
+    if (!client.call(srv)) { return false; }
+    srv.request.request.data.at(2) = 0x35; srv.request.request.data.at(3) = 0x00; 
+    if (!client.call(srv)) { return false; }
 
     // Debounce touch & release reg 0x5B, config 1 reg 0x5c, config 2 ref 0x5D
-    buff[0] = 0x5B, buff[1] = 0x00; write(file, buff, 2);
-    buff[0] = 0x5C, buff[1] = 0x10; write(file, buff, 2); // default, 16uA charge current
-	buff[0] = 0x5D, buff[1] = 0x20; write(file, buff, 2); // 0.5us encoding, 1ms period
+    srv.request.request.data.at(2) = 0x5B; srv.request.request.data.at(3) = 0x00; 
+    if (!client.call(srv)) { return false; }
+    srv.request.request.data.at(2) = 0x5C; srv.request.request.data.at(3) = 0x10; // 16uA current
+    if (!client.call(srv)) { return false; }
+    srv.request.request.data.at(2) = 0x5D; srv.request.request.data.at(3) = 0x20; // 0.5 us encoding
+    if (!client.call(srv)) { return false; }
 
-
-
+    return true;
 } 
+
+uint16_t report_touch(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
+    uint16_t wasTouched = 0x0000, readTouch[2] = {0x0000}, currentlyTouched = 0;
+    srv.request.request.resize(3);
+    srv.request.size(3);
+
+    while(1) {
+    // Touch status register = 0x00
+    srv.request.request = {0x02, 0x5A, 0x00};
+    if (client.call(srv)) {
+        srv.request.request{0x01, 0x5A, 0x00, 0x00, 0x00, 0x00};
+        if (client.call(srv)) {
+            readTouch[0] = (uint16_t)(srv.response.data.at(0) << 8);
+            readTouch[0] |= (uint16_t)(srv.response.data.at(1));
+            readTouch[1] = (uint16_t)(srv.response.data.at(2) << 8);
+            readTouch[1] |= (uint16_t)(srv.response.data.at(3));
+
+            currentlyTouched = readTouch[0];
+            currentlyTouched |= readTouch[1] << 8;
+            currentlyTouched &= 0x0FFF;
+
+            for(int i = 0; i < 12; i++) {
+                if ((currentlyTouched & (1 << i)) && !(wasTouched & (1 << i)))
+                    printf("Pin %i was touched.\n", i);
+                if (!(currentlyTouched & (1 << i)) && (wasTouched & (1 << i)))
+                    printf("Pin %i was released. \n", i);
+            }
+            wasTouched = currentlyTouched;
+            usleep(50000);
+        }
+    }
+    }
+    return 0;
+}
 
 int main(int argc, char **argv) {
     // Initialize touch sensor node
