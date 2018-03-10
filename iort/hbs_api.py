@@ -46,6 +46,18 @@ def get_tts():
         return b'\x00'
 
 
+@app.route('/api/getdata')
+def get_data():
+    logger.info("Recieved a request for sensor data.")
+    if os.path.exists(RETURN_DATA_PATH):
+        with open(RETURN_DATA_PATH, 'r') as data_file:
+            logger.info("Sending \"%s\" to client.", data_file.readline())
+            return data_file.readline()
+    else:
+        logger.error("Data file does not exist.")
+        return b'\x00'
+
+
 @app.route('/api/setdata')
 def set_data():
     logger.info("Data from robot incomming. Writing to data file.")
