@@ -20,7 +20,7 @@ static char const* iic_dev = "/dev/i2c-1";
 std::queue<Request> work_queue, completed_queue;
 
 bool write_req(Request* job) {
-    ROS_INFO("A write request has been made for device %x", job->get_id());
+    ROS_INFO("A write request has been made for device %X", job->get_id());
     if ((fd = open(iic_dev, O_RDWR)) < 0) { 
         ROS_ERROR("Cannot open I2C bus."); 
         return false;
@@ -35,15 +35,11 @@ bool write_req(Request* job) {
         ioctl(fd, I2C_SLAVE, dev_addr); 
         /* send the single write command and data. */
         if (write(fd, to_write, job->data.size()) != job->data.size()) {
-<<<<<<< HEAD
-            ROS_ERROR("Failed to write to I2C bus. The bus manager will try twice more.");
-            for (int i = 0; i < 2; i++) {
-=======
             job->num_attempts++;
             ROS_ERROR("Failed to write to I2C bus. The bus manager will try twice more.");
             for (int i = 0; i < 2; i++) {
                 job->num_attempts++;
->>>>>>> i2cbus-wait-for-status
+                /* wait just to be safe. */
                 usleep(70000);
                 if (write(fd, to_write, job->data.size()) != job->data.size()) {
                     ROS_ERROR("Failed to write to the I2C bus. Trying again.");
@@ -61,7 +57,7 @@ bool write_req(Request* job) {
 }
 
 bool read_req(Request* job) {
-    ROS_INFO("A read request has been made for device %x", job->get_id());
+    ROS_INFO("A read request has been made for device %X", job->get_id());
     if ((fd = open(iic_dev, O_RDWR)) < 0) {
         ROS_ERROR("Failed to open I2C bus.");
         return false;
@@ -82,17 +78,11 @@ bool read_req(Request* job) {
         usleep(70000);
 
         /* read data from requested registers. */
-<<<<<<< HEAD
-        if (read(fd, read_reg, job->data.size()) != job->data.size()) { 
-            ROS_ERROR("Failed to read from I2C bus. The bus manager will try twice more.");
-            for (int i = 0; i < 2; i++) {
-=======
         if (read(fd, read_reg, job->data.size()) != job->data.size()) {
             job->num_attempts++;
             ROS_ERROR("Failed to read from I2C bus. The bus manager will try twice more.");
             for (int i = 0; i < 2; i++) {
                 job->num_attempts++;
->>>>>>> i2cbus-wait-for-status
                 usleep(70000);
                 if (read(fd, read_reg, job->data.size()) != job->data.size())
                     ROS_ERROR("Failed to read from the I2C bus. Trying again.")
@@ -116,7 +106,7 @@ bool handle_req(hbs2::i2c_bus::Request &req, hbs2::i2c_bus::Response &res) {
     
     /* check to see if the request is for status and serve it first if so. */
     if (request.get_type() == "status") {
-        ROS_INFO("A request has been made for the status of device %x", req.request[1]);
+        ROS_INFO("A request has been made for the status of device %X", req.request[1]);
         res.success = false;
         /* find the job that the request for status is for. it should be in the completed queue. */
         for (int i = 0; i < completed_queue.size(); i++) {
@@ -138,11 +128,8 @@ bool handle_req(hbs2::i2c_bus::Request &req, hbs2::i2c_bus::Response &res) {
     /* otherwise, put the job on the work queue. */
     else { work_queue.push(request); }
     
-<<<<<<< HEAD
-    if (!work_queue.empty()) {
-=======
+    /* always empty the work queue before returning from the callback. */
     while (!work_queue.empty()) {
->>>>>>> i2cbus-wait-for-status
 
         // TODO sort on priority
 
@@ -157,18 +144,15 @@ bool handle_req(hbs2::i2c_bus::Request &req, hbs2::i2c_bus::Response &res) {
             }
             else {
                 /* the read request was NOT sucessful. */
-<<<<<<< HEAD
-=======
                 res.success = false;
                 if (job.num_attempts < 6) {
-                    ROS_WARN("Putting request for device %x back onto work queue.", job.get_id());
+                    ROS_WARN("Putting request for device %X back onto work queue.", job.get_id());
                     work_queue.push(job);
                 }
                 else {
-                    ROS_ERROR("Request for device %x is being dropped from the queue.", job.get_id());
+                    ROS_ERROR("Request for device %X is being dropped from the queue.", job.get_id());
                 }
->>>>>>> i2cbus-wait-for-status
-                ROS_ERROR("Read request for device %x failed.", job.get_id());
+                ROS_ERROR("Read request for device %X failed.", job.get_id());
             }
         }
         else if (job.get_type() == "write") { 
@@ -178,13 +162,10 @@ bool handle_req(hbs2::i2c_bus::Request &req, hbs2::i2c_bus::Response &res) {
                 res.success = true;
             }
             else {
-<<<<<<< HEAD
-=======
                 /* push the job back onto the queue to try again. */
                 res.success = false;
                 work_queue.push(job);
->>>>>>> i2cbus-wait-for-status
-                ROS_ERROR("Write request for device %x failed.", job.get_id());
+                ROS_ERROR("Write request for device %X failed.", job.get_id());
             }
 
         }
