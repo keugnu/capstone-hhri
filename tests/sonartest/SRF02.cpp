@@ -15,45 +15,45 @@
 
 int main(int argc, char *argv[]) {
 
-	unsigned char data[10];
-	// Create I2C bus
-	int file;
-	char const *bus = "/dev/i2c-1";
-	if ((file = open(bus, O_RDWR)) < 0) {
-		printf("Failed to open the bus. \n");
-		exit(1);
-	}
+    unsigned char data[10];
+    // Create I2C bus
+    int file;
+    char const *bus = "/dev/i2c-1";
+    if ((file = open(bus, O_RDWR)) < 0) {
+        printf("Failed to open the bus. \n");
+        exit(1);
+    }
 
-	// Get I2C device, SRF02 I2C address is 0x70
-	ioctl(file, I2C_SLAVE, 0x70);
+    // Get I2C device, SRF02 I2C address is 0x70
+    ioctl(file, I2C_SLAVE, 0x70);
 
-	while(true) {
-	    // Set register pointer to command register (0x00)
-	    // Reading range in centimeters (register 0x51), 2 bytes
-	    // Range high byte and range low byte	    
-	    data[0] = 0x00;
-	    data[1] = 0x51;
-	    write(file, data, 2);
-	    usleep(100);
+    while(true) {
+        // Set register pointer to command register (0x00)
+        // Reading range in centimeters (register 0x51), 2 bytes
+        // Range high byte and range low byte	    
+        data[0] = 0x00;
+        data[1] = 0x51;
+        write(file, data, 2);
+        usleep(100);
 
-	    // Register to read from
-	    data[0] = 0x00;
-	    write(file, data, 1);
-	    usleep(70000);
-	    
-	    if(read(file, data, 4) != 4) {
-		printf("Error : Input/Output error \n");
-	    } else {
-		// Shift the high byte (data[2]) to be higher 8 bits
-		unsigned char high = data[2];
-		unsigned int low = data[3];
-	        unsigned int range = high;
-		range <<= 8;
-		// Set lower byte (data[3]) to be lower 8 bits
-		range += low;
+        // Register to read from
+        data[0] = 0x00;
+        write(file, data, 1);
+        usleep(70000);
+        
+        if(read(file, data, 4) != 4) {
+        printf("Error : Input/Output error \n");
+        } else {
+        // Shift the high byte (data[2]) to be higher 8 bits
+        unsigned char high = data[2];
+        unsigned int low = data[3];
+            unsigned int range = high;
+        range <<= 8;
+        // Set lower byte (data[3]) to be lower 8 bits
+        range += low;
 
-		// Output data to screen
-		printf("SRF02 Range in centimeters : %ucm \n", range);
-	    }
-	}
+        // Output data to screen
+        printf("SRF02 Range in centimeters : %ucm \n", range);
+        }
+    }
 }

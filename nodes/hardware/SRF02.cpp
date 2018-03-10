@@ -20,7 +20,7 @@ bool write_init(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
     srv.request.size = 4;
 
     if (client.call(srv)) {
-	return true;    
+    return true;    
     }
 
     ROS_ERROR("Failed to call service i2c_srv");
@@ -32,19 +32,19 @@ unsigned int read_temp(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
     srv.request.request.resize(6);
     srv.request.request = {0x01, 0x70, 0x00, 0x00, 0x00, 0x00};
     srv.request.size = 6;
-	
+    
     if (client.call(srv)) {
-	std::vector<signed char> data(srv.response.data);
+    std::vector<signed char> data(srv.response.data);
 
-	unsigned char high = srv.response.data.at(2);
-	unsigned char low = srv.response.data.at(3);
-	// Set higher byte (high) to be upper 8 bits
-	unsigned int range = high;
-	range <<= 8;
-	// Set lower byte (low) to be lower 8 bits
-	range += low;
+    unsigned char high = srv.response.data.at(2);
+    unsigned char low = srv.response.data.at(3);
+    // Set higher byte (high) to be upper 8 bits
+    unsigned int range = high;
+    range <<= 8;
+    // Set lower byte (low) to be lower 8 bits
+    range += low;
 
-	return range;
+    return range;
     }
     ROS_ERROR("Failed to call service i2c_srv");
     return -1;
@@ -59,8 +59,8 @@ int main(int argc, char **argv) {
     ros::ServiceClient client = n.serviceClient<hbs2::i2c_bus>("i2c_srv");
     hbs2::i2c_bus srv;
     if (write_init(client, srv)) {
-	unsigned int range = read_range(client, srv);
-	ROS_INFO("Range in centimeters: %u\n", range);
+    unsigned int range = read_range(client, srv);
+    ROS_INFO("Range in centimeters: %u\n", range);
 }
     return 0;	
 }

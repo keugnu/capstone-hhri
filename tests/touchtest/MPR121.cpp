@@ -20,8 +20,8 @@ int main(int argc, char *argv[]) {
     int file;
     char *bus = "/dev/i2c-1";
     if ((file = open(bus, O_RDWR)) < 0) {
-	printf("Failed to open the bus. \n");
-	exit(1);
+    printf("Failed to open the bus. \n");
+    exit(1);
     }
     
     // Get I2C device, MPR121 default I2C address is 0x5A
@@ -45,11 +45,11 @@ int main(int argc, char *argv[]) {
     char r_buff[2] = {0x42, 6};
 
     for (int i = 0; i<12; i++) {
-	write(file, t_buff, 2);
+    write(file, t_buff, 2);
         t_buff[0] += i*2;
 
-	write(file, r_buff, 2);
-	r_buff[0] += i*2;
+    write(file, r_buff, 2);
+    r_buff[0] += i*2;
     }
 
     // Setup registers:
@@ -79,23 +79,23 @@ int main(int argc, char *argv[]) {
 
     while(true) {
 
-	uint16_t wasTouched = 0x0000, currentlyTouched[2] = {0x0000}, cTouched = 0;
-	buff[0] = 0x00; // Touch status register
-	write(file, buff, 1);
-	read(file, currentlyTouched, 2);
-	cTouched = currentlyTouched[0];
-	cTouched |= currentlyTouched[1] << 8;
-	cTouched &= 0x0FFF;
+    uint16_t wasTouched = 0x0000, currentlyTouched[2] = {0x0000}, cTouched = 0;
+    buff[0] = 0x00; // Touch status register
+    write(file, buff, 1);
+    read(file, currentlyTouched, 2);
+    cTouched = currentlyTouched[0];
+    cTouched |= currentlyTouched[1] << 8;
+    cTouched &= 0x0FFF;
 
-	for(int i = 0; i < 12; i++) {
-	    if ((cTouched & (1 << i)) && !(wasTouched & (1 << i)))
-		printf("Pin %i was touched.\n", i);
-	    if (!(cTouched & (1 << i)) && (wasTouched & (1 << i)))
-		printf("Pin %i was released.\n", i);
-	}
+    for(int i = 0; i < 12; i++) {
+        if ((cTouched & (1 << i)) && !(wasTouched & (1 << i)))
+        printf("Pin %i was touched.\n", i);
+        if (!(cTouched & (1 << i)) && (wasTouched & (1 << i)))
+        printf("Pin %i was released.\n", i);
+    }
 
-	wasTouched = cTouched;
-	usleep(50000);
+    wasTouched = cTouched;
+    usleep(50000);
 
 
     }

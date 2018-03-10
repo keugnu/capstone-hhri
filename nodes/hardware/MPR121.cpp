@@ -18,13 +18,13 @@ bool write_init(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
     srv.request.size = 4;
 
     if (client.call(srv)) {
-		srv.request.request.resize(4);
-		srv.request.request = {0x02, 0x5A, 0x5E, 0x00};
-		srv.request.size = 4;
+        srv.request.request.resize(4);
+        srv.request.request = {0x02, 0x5A, 0x5E, 0x00};
+        srv.request.size = 4;
 
-		if (client.call(srv)) {
-			return true;
-		}
+        if (client.call(srv)) {
+            return true;
+        }
     }
 
     ROS_ERROR("Failed to call i2c_srv");
@@ -33,36 +33,36 @@ bool write_init(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
 
 // Set up touch and release threshold registers.
 bool touch_init(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
-	// Touch and release threshold registers 
-	uint8_t thres_reg = 0x41;
-	uint8_t rel_reg = 0x42;
+    // Touch and release threshold registers 
+    uint8_t thres_reg = 0x41;
+    uint8_t rel_reg = 0x42;
 
-	// Touch and release thresholds
-	uint8_t touch_thres = 12;
-	uint8_t rel_thres = 6;
+    // Touch and release thresholds
+    uint8_t touch_thres = 12;
+    uint8_t rel_thres = 6;
 
-	srv.request.request.resize(4);
-	srv.request.size(4);
+    srv.request.request.resize(4);
+    srv.request.size(4);
 
     // Set up 13 touch channels with touch threshold = 12
-	srv.request.request = {0x02, 0x5A, thres_reg, touch_thres};
+    srv.request.request = {0x02, 0x5A, thres_reg, touch_thres};
 
-	for (int i = 0; i < 12; i++) {
-		if (client.call(srv)) {
-			thres_reg += i*2;
-			srv.request.request = {0x02, 0x5A, thres_reg, touch_thres};
-		} else { ROS_ERROR("Failed to call i2c_srv for touch"); return false; }
-	}
+    for (int i = 0; i < 12; i++) {
+        if (client.call(srv)) {
+            thres_reg += i*2;
+            srv.request.request = {0x02, 0x5A, thres_reg, touch_thres};
+        } else { ROS_ERROR("Failed to call i2c_srv for touch"); return false; }
+    }
 
     // Set up 13 touch channels with release threshold = 6
-	srv.request.request = {0x02, 0x5A, rel_reg, rel_thres};
+    srv.request.request = {0x02, 0x5A, rel_reg, rel_thres};
 
-	for (int i = 0; i < 12; i++) {
-		if (client.call(srv)) {
-			rel_reg += i*2;
-			srv.request.request = {0x02, 0x5A, rel_reg, rel_thres};
-		} else { ROS_ERROR("Failed to call i2c_srv for touch"); return false; }
-	}
+    for (int i = 0; i < 12; i++) {
+        if (client.call(srv)) {
+            rel_reg += i*2;
+            srv.request.request = {0x02, 0x5A, rel_reg, rel_thres};
+        } else { ROS_ERROR("Failed to call i2c_srv for touch"); return false; }
+    }
 
     return true;
 }

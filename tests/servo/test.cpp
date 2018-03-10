@@ -20,14 +20,14 @@ string chan; // channel
 chan = "0";
 pos = "0";
 while (pos != "end")
-	{
-	cout << "chan:";
-	cin >> chan;
-	cout << "pos:";
-	cin >> pos;
-	comand = "bash run.sh /dev/ttyACM0 "+ chan +" " + pos;
-	//cout<< comand + "\n";
-	system((comand).c_str());
-	}
+    {
+    cout << "chan:";
+    cin >> chan;
+    cout << "pos:";
+    cin >> pos;
+    comand = "bash run.sh /dev/ttyACM0 "+ chan +" " + pos;
+    //cout<< comand + "\n";
+    system((comand).c_str());
+    }
 return 0;
 }

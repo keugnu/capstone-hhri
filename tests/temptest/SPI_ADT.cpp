@@ -27,23 +27,23 @@ int main(int argc, char *argv[]) {
     SPI *mySPI = new SPI("/dev/spidev3.0", &spi_config);
 
     if(mySPI->begin()) {
-	uint8_t txBuffer[2] = {0};
-	uint8_t rxBuffer[2] = {0};
+    uint8_t txBuffer[2] = {0};
+    uint8_t rxBuffer[2] = {0};
 
-	// Device id register: 0x4D
-	// Reading  device id before attempting to read temperature
-	while(true) {
-	    txBuffer[0] = 0x90;
-	    txBuffer[1] = 0x23;
-	    rxBuffer[0] = 0x91;
-	    rxBuffer[1] = 0x00;
-	    mySPI->xfer(txBuffer, 2, rxBuffer, 2);
-   	    printf("WR: %u - %u \t", rxBuffer[0], rxBuffer[1]);
-	    sleep(1);
-	}
-	delete mySPI;
+    // Device id register: 0x4D
+    // Reading  device id before attempting to read temperature
+    while(true) {
+        txBuffer[0] = 0x90;
+        txBuffer[1] = 0x23;
+        rxBuffer[0] = 0x91;
+        rxBuffer[1] = 0x00;
+        mySPI->xfer(txBuffer, 2, rxBuffer, 2);
+           printf("WR: %u - %u \t", rxBuffer[0], rxBuffer[1]);
+        sleep(1);
+    }
+    delete mySPI;
     } else {
-	printf("Failed to access SPI bus. \n");
+    printf("Failed to access SPI bus. \n");
     }
 
     return 1;

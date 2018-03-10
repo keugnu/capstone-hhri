@@ -12,8 +12,8 @@ int main(int argc, char *argv[]) {
     int file;
     char *bus = "/dev/i2c-0";
     if ((file = open(bus, O_RDWR)) < 0) {
-	printf("Failed to open the bus. \n");
-	exit(1);
+    printf("Failed to open the bus. \n");
+    exit(1);
     }
 
     // Get i2c device address, ADT7411 0x4a
@@ -46,8 +46,8 @@ while(true) {
     char data[1] = {0};
     write(file, reg, 1);
     if(read(file, data, 1) != 1) {
-	printf("LSB I/O error \n");
-	exit(1);
+    printf("LSB I/O error \n");
+    exit(1);
     }
   
     lsb = data[0]%4;
@@ -56,8 +56,8 @@ while(true) {
     reg[0] = 0x07;
     write(file, reg, 1);
     if(read(file, data, 1) != 1) {
-	printf("MSB I/O error \n");
-	exit(1);
+    printf("MSB I/O error \n");
+    exit(1);
     }
 
     msb = data[0];
