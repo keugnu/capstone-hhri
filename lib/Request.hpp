@@ -10,9 +10,15 @@ class Request {
         char _id;
         std::string _type;
         bool _status;
+<<<<<<< HEAD
     int _size;
     int _expected;
+=======
+        int _size;
+        int _expected;
+>>>>>>> i2cbus-wait-for-status
     public:
+        int num_attempts;
         std::vector<signed char> data;
     
         Request(const std::vector<signed char>, int);
@@ -40,6 +46,7 @@ Request::Request(const std::vector<signed char> req, int num_bytes) {
     _id = req[1];
     _status = false;
     _size = num_bytes;
+    num_attempts = 0;
 
     for (int i = 0; i < _size - 2; i++) { data.push_back(req[i + 2]); }
 
