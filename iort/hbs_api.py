@@ -8,6 +8,7 @@ from flask import Flask, request
 
 COMMAND_FILE_PATH = r'/opt/.git/capstone-hhri/iort/hbs/api/command.bin'
 SPEECH_KW_PATH = r'/opt/.git/capstone-hhri/iort/hbs/api/tts.txt'
+RETURN_DATA_PATH = r'/opt/.git/capstone-hhri/iort/hbs/api/data.txt'
 app = Flask(__name__)
 
 """ Error return 0
@@ -43,6 +44,15 @@ def get_tts():
     else:
         logger.error('TTS file does not exist.')
         return b'\x00'
+
+
+@app.route('/api/setdata')
+def set_data():
+    logger.info("Data from robot incomming. Writing to data file.")
+    with open(RETURN_DATA_PATH, 'w') as data_file:
+        logger.info("Writing \"%s\" to data file.", request.args['data'])
+        data_file.write(request.args['data'] + '\n')
+    return b'\xFF'    
 
 
 @app.route('/api/readsonar')
