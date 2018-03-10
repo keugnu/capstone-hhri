@@ -31,7 +31,7 @@ VALID_COMMANDS = {
 
 def wait_for_data():
     logger.info("Sending request for data from the sensor.")
-    req = request.get(API_URI + '/api/getdata')
+    req = requests.get(API_URI + '/api/getdata')
     if req.status_code == 200:
         return req.data
     else:
@@ -40,8 +40,6 @@ def wait_for_data():
 
 
 def send_command(user_input, tts=None):
-    logger = logging.getLogger(__name__)
-    
     if tts is not None:
         logger.info('Sending GET request with data %s ', tts)
         req = requests.get(''.join([API_URI, '/api/speak?tts=', tts]))
@@ -53,8 +51,6 @@ def send_command(user_input, tts=None):
 
 
 def check_input(user_input):
-    logger = logging.getLogger(__name__)
-    
     if user_input == 4:
         logger.warning('User wishes to exit. Shutting down...')
         print('Goodbye.')
@@ -88,8 +84,6 @@ def check_input(user_input):
 
 
 def main():
-    # start_logging()
-    logger = logging.getLogger(__name__)
     logger.info('Application has started.')
     
     print(WELCOME)
@@ -111,6 +105,8 @@ def main():
 
 
 if __name__ == '__main__':
+    # start_logging()
+    logger = logging.getLogger(__name__)
     try:
         sys.exit(main())
     except KeyboardInterrupt:
