@@ -6,6 +6,8 @@ import sys
 import requests
 import logging
 
+from time import sleep
+
 
 WELCOME = """
 Welcome to the Robo-Sense control terminal, sponsored by Dewritos:
@@ -25,6 +27,16 @@ VALID_COMMANDS = {
     2: 'speak',
     3: 'shakehead'
 }
+
+
+def wait_for_data():
+    logger.info("Sending request for data from the sensor.")
+    req = request.get(API_URI + '/api/getdata')
+    if req.status_code == 200:
+        return req.data
+    else:
+        return
+
 
 
 def send_command(user_input, tts=None):
@@ -52,7 +64,20 @@ def check_input(user_input):
         sys.stdout.write('Your input is not a valid command. Try again: ')
     else:
         logger.info('User input %s was accepted.', user_input)
-        if user_input == 2:
+        if user_input == 1:
+            sys.stdout.write('Waiting a max of 10 seconds for data from sensor...\n')
+            data = None
+            for i in range(10):
+                data = wait_for_data()
+                if data is not None:
+                    sys.stdout.write('Data recieved: %s', data)
+                    break
+                else:
+                    sleep(1)
+            if data is None:
+                sys.stdout.write('No data recieved from the sensor.')
+                        
+        elif user_input == 2:
             sys.stdout.write('Please provide text for the robot to speak: ')
             tts = input()
             return send_command(user_input, tts)
