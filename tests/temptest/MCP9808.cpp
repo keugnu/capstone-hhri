@@ -4,6 +4,7 @@
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <stdint.h>
 
 int main(int argc, char *argv[]) 
 {
@@ -20,7 +21,7 @@ int main(int argc, char *argv[])
 
     // Select configuration register(0x01)
     // Continuous conversion mode, Power-up default(0x00, 0x00)
-    char config[3] = {0};
+    uint8_t  config[3] = {0};
     config[0] = 0x01;
     config[1] = 0x00;
     config[2] = 0x00;
@@ -34,9 +35,9 @@ int main(int argc, char *argv[])
     while(true) {
     // Read 2 bytes of data from register(0x05)
     // temp msb, temp lsb
-    char reg[1] = {0x05};
+    uint8_t reg[1] = {0x05};
     write(file, reg, 1);
-    char data[2] = {0};
+    uint8_t data[2] = {0};
     if(read(file, data, 2) != 2)
     {
         printf("Error : Input/Output error \n");
