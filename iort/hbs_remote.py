@@ -37,7 +37,7 @@ def wait_for_data():
         return req_json['content']
     else:
         logger.warning("No data recieved from sensor.")
-        return 1
+        return None
 
 
 def send_command(user_input, tts=None):
@@ -68,21 +68,18 @@ def check_input(user_input):
             return send_command(user_input, tts)
         else:
             status = send_command(user_input)
-            if status == 200 and user_input == 1:
-            sys.stdout.write('Waiting a max of 10 seconds for data from sensor...\n')
-            data = None
-            for i in range(10):
-                print(i)
-                logger.debug("In the wait for data loop.")
-                data = wait_for_data()
-                if data is not 1:
-                    sys.stdout.write('Data recieved: %s', data)
-                    break
-                else:
-                    logger.warning("Trying to get data again.")
-                    sleep(1)
-            if data is None:
-                sys.stdout.write('No data recieved from the sensor.')
+            if status == 200 and user_input in [1]:
+                sys.stdout.write('Waiting a max of 10 seconds for data from sensor...\n')
+                for i in range(10):
+                    data = wait_for_data()
+                    if data is not None:
+                        print('Data recieved: {}'.format(data))
+                        break
+                    else:
+                        logger.warning("Trying to get data again.")
+                        sleep(1)
+                if data is None:
+                    print('No data recieved from the sensor.')
     logger.error('Something went wrong...')
     return None
 
