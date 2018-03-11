@@ -61,7 +61,14 @@ def check_input(user_input):
         sys.stdout.write('Your input is not a valid command. Try again: ')
     else:
         logger.info('User input %s was accepted.', user_input)
-        if user_input == 1:
+                           
+        if user_input == 2:
+            sys.stdout.write('Please provide text for the robot to speak: ')
+            tts = input()
+            return send_command(user_input, tts)
+        else:
+            status = send_command(user_input)
+            if status == 200 and user_input == 1:
             sys.stdout.write('Waiting a max of 10 seconds for data from sensor...\n')
             data = None
             for i in range(10):
@@ -76,13 +83,6 @@ def check_input(user_input):
                     sleep(1)
             if data is None:
                 sys.stdout.write('No data recieved from the sensor.')
-                        
-        elif user_input == 2:
-            sys.stdout.write('Please provide text for the robot to speak: ')
-            tts = input()
-            return send_command(user_input, tts)
-        else:
-            return send_command(user_input)
     logger.error('Something went wrong...')
     return None
 
