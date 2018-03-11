@@ -32,7 +32,7 @@ def wait_for_data():
     req = requests.get(API_URI + '/api/getdata')
     if req.status_code == 200:
         req_json = req.json()
-        return req_json['content']
+        return req_json
     else:
         logger.warning("No data recieved from sensor.")
         return None
