@@ -21,7 +21,7 @@ Please enter a command:
     4)  Exit the program
 """
 
-API_URI = 'http://34.212.22.223:5000'
+API_URI = 'http://127.0.0.1:5000'
 VALID_COMMANDS = {
     1: 'readsonar',
     2: 'speak',
@@ -33,10 +33,11 @@ def wait_for_data():
     logger.info("Sending request for data from the sensor.")
     req = requests.get(API_URI + '/api/getdata')
     if req.status_code == 200:
-        return req.data
+        req_json = req.json()
+        return req_json['content']
     else:
-        return
-
+        logger.warning("No data recieved from sensor.")
+        return 1
 
 
 def send_command(user_input, tts=None):
@@ -64,11 +65,14 @@ def check_input(user_input):
             sys.stdout.write('Waiting a max of 10 seconds for data from sensor...\n')
             data = None
             for i in range(10):
+                print(i)
+                logger.debug("In the wait for data loop.")
                 data = wait_for_data()
-                if data is not None:
+                if data is not 1:
                     sys.stdout.write('Data recieved: %s', data)
                     break
                 else:
+                    logger.warning("Trying to get data again.")
                     sleep(1)
             if data is None:
                 sys.stdout.write('No data recieved from the sensor.')
@@ -106,6 +110,9 @@ def main():
 
 if __name__ == '__main__':
     # start_logging()
+    logging.basicConfig(filename='robot_remote.log',
+                        level=logging.DEBUG,
+                        format='%(asctime)s : %(levelname)s\t %(message)s')
     logger = logging.getLogger(__name__)
     try:
         sys.exit(main())
