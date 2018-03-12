@@ -1,28 +1,56 @@
-Node:	i2c_manager
+Node:		hbs2_i2c_mgr
+Services:
+	Server: i2c_bus
 Input:
-	signed char[] request
+	int8 request[]
+	int8 size
 Config:
-	request	:	request[0] 		type (1: write|0: read)
-			request[1-8]		device address
-			request[9-16]		register address
-			request[17-25]		byte to write if type=1 o/w 0
+	size	:	number of registers for read/write in the request
+	request	:	request[0] 			type (0: status | 1: write | 2: read)
+				request[1]			device address
+				request[2 + 2n]		register address
+				request[3 + 2n]		byte to write if type=1 o/w 0
+	class Request
+		private:
+			_id (device address)
+			_type (type of request from request[0])
+			_status
+			_size (size from size)
+			_expected (expected number of bytes from a read request)
+		public:
+			num_attempts
+			data[]
+
+			get_id()
+			get_type()
+			get_status()
+			set_status()
+			get_size()
+			get_expected()
+
+			Request(request[], size)
 Output:
 	bool success
-	signed char[] data
+	int8 data[]
 Steps:
 	1. 	Initialization: Check if bus is able to be opened else exit(1)
 	2.	Wait for request
 	3. 	if request exists, then
-		(a) place on request queue
-	4.	if queue is not empty
-		(a) sort the queue on priority
+		(a) if request is of type status
+			(i) search the completed queue for the job and return success = true and data if found
+		(b) else place on work queue
+	4.	while work queue is not empty
+		(a) sort the work queue on priority
 		(b) serve top request
-			(i)	if request is type R, then
-					(A) read register(s) in request[] and set data[]
-					(B) return data
-				elseif write request succeeds, then
-					(A) return true
-				else:
-					(A) increase priority by 1
-					(B) place request back onto queue
-					(C) return false
+			(i)	if request is type read, then
+				(A) read register(s) in request[2 + 2n] and set job.data[]
+				(B) if successful, then
+					(1) place on completed queue
+				(C) else retry twice more
+					(1) if unsuccessful 3 times, drop the request from the work queue
+			(ii) elseif request is type write, then
+				(A) write to registers in request[2 + 2n] with request[3 + 2n]
+				(B) if successful, then
+					(1) place on completed queue
+				(C) else retry twice more
+					(1) if unsuccessful 3 times, drop the request from the queue
