@@ -13,7 +13,7 @@ WELCOME = """
 Welcome to the Robo-Sense control terminal, sponsored by Dewritos:
     "If you want to fuel your pro gaming workouts the right way, choose Dewritos!"
 Please enter a command:
-    1)  Detect distance of nearest object in front of the robot
+    1)  Detect distance of nearest object (in centimeters) in front of the robot
     2)  Speak
     3)  Shake head
     4)  Exit the program
@@ -30,9 +30,9 @@ VALID_COMMANDS = {
 def wait_for_data():
     logger.info("Sending request for data from the sensor.")
     req = requests.get(API_URI + '/api/getdata')
-    if req.status_code == 200:
-        req_json = req.json()
-        return req_json
+    if req.status_code == 200 and len(req.content) > 0:
+        print("Sensor data recieved.")
+        return req.json()
     else:
         logger.warning("No data recieved from sensor.")
         return None
@@ -56,7 +56,8 @@ def check_input(user_input):
         sys.exit(0)
     elif not user_input in VALID_COMMANDS:
         logger.warning('User input %s is not a valid command.', user_input)
-        sys.stdout.write('Your input is not a valid command. Try again: ')
+        print('Your input is not a valid command. Try again: ')
+        return None
     else:
         logger.info('User input %s was accepted.', user_input)
                            
@@ -67,7 +68,7 @@ def check_input(user_input):
         else:
             status = send_command(user_input)
             if status == 200 and user_input in [1]:
-                sys.stdout.write('Waiting a max of 10 seconds for data from sensor...\n')
+                print('Waiting a maximum of 10 seconds for data from the sensor...\n')
                 for i in range(10):
                     data = wait_for_data()
                     if data is not None:
@@ -78,6 +79,7 @@ def check_input(user_input):
                         sleep(1)
                 if data is None:
                     print('No data recieved from the sensor.')
+            return status
     logger.error('Something went wrong...')
     return None
 
