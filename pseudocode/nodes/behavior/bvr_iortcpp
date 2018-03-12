@@ -1,0 +1,22 @@
+Node:	iort
+Services:
+	Client: srv_iot
+Input:
+	None
+Config:
+	0x01	Request for sonar senosr	(srv_sonar)
+	0x02	Request for text to speech	(srv_tts)
+	0x03	Request for shake head "no"	(srv_shakehead)
+	0x03	Request for _
+	...
+	0xFF	Request for _
+	Request endpoint https://ec2.webserver.aws.com/api/request
+Output:
+	None
+Steps:
+	1. 	Initialization: Begin sending HTTP GET to Request endpoint (2Hz)
+	2. 	if response is not NULL, then
+		(a) make service call to srv_iot(response)
+	3.	if srv_iot success, then
+		(a) if response was waiting for data, then
+			(i) send HTTP GET with data parameter to Request endpoint
