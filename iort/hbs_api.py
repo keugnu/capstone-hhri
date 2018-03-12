@@ -50,10 +50,12 @@ def get_tts():
 def get_data():
     logger.info("Recieved a request for sensor data.")
     if os.path.exists(RETURN_DATA_PATH):
-        with open(RETURN_DATA_PATH, 'r') as data_file:
+        with open(RETURN_DATA_PATH, 'r+') as data_file:
             data = data_file.readline()
             logger.info("Sending \"%s\" to client.", data)
-            return data
+        # truncate file in case of subsequent requests
+        open(RETURN_DATA_PATH, 'w').close()
+        return data
     else:
         logger.error("Data file does not exist.")
         return b'\x00'
@@ -64,7 +66,7 @@ def set_data():
     logger.info("Data from robot incomming. Writing to data file.")
     with open(RETURN_DATA_PATH, 'w') as data_file:
         logger.info("Writing \"%s\" to data file.", request.args['data'])
-        data_file.write(request.args['data'] + '\n')
+        data_file.write(request.args['data'])
     return b'\xFF'    
 
 
