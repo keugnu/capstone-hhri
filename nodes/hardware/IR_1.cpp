@@ -2,9 +2,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <linux/i2c-dev.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
 #include <time.h>
 
 #include "ros/ros.h"
@@ -27,12 +24,12 @@ VL53L0X::VL53L0X(void)
 {
 }
  
-void VL53L0X::setAddress(uint8_t new_addr) {
+void VL53L0X::setAddress(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t new_addr) {
   writeReg(client, srv, I2C_SLAVE_DEVICE_ADDRESS, new_addr & 0x7F);
   address = new_addr;
 }
 
-bool VL53L0X::init(bool io_2v8) {
+bool VL53L0X::init(ros::ServiceClient &client, hbs2::i2c_bus &srv, bool io_2v8) {
   // sensor uses 1V8 mode for I/O by default; switch to 2V8 mode if necessary
   if (io_2v8)
   {
@@ -55,7 +52,7 @@ bool VL53L0X::init(bool io_2v8) {
   writeReg(client, srv, MSRC_CONFIG_CONTROL, readReg(client, srv, MSRC_CONFIG_CONTROL) | 0x12);
 
   // set final range signal rate limit to 0.25 MCPS (million counts per second)
-  setSignalRateLimit(0.25);
+  setSignalRateLimit(client, srv, 0.25);
 
   writeReg(client, srv, SYSTEM_SEQUENCE_CONFIG, 0xFF);
 
@@ -99,11 +96,6 @@ bool VL53L0X::init(bool io_2v8) {
   }
 
   writeMulti(client, srv, GLOBAL_CONFIG_SPAD_ENABLES_REF_0, ref_spad_map, 6);
-
-  // -- VL53L0X_set_reference_spads() end
-
-  // -- VL53L0X_load_tuning_settings() begin
-  // DefaultTuningSettings from vl53l0x_tuning.h
 
   writeReg(client, srv, 0xFF, 0x01);
   writeReg(client, srv, 0x00, 0x00);
@@ -361,7 +353,7 @@ void VL53L0X::readMulti(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t 
 // seems to increase the likelihood of getting an inaccurate reading because of
 // unwanted reflections from objects other than the intended target.
 // Defaults to 0.25 MCPS as initialized by the ST API and this library.
-bool VL53L0X::setSignalRateLimit(float limit_Mcps)
+bool VL53L0X::setSignalRateLimit(ros::ServiceClient &client, hbs2::i2c_bus &srv, float limit_Mcps)
 {
   if (limit_Mcps < 0 || limit_Mcps > 511.99) { return false; }
 
@@ -383,7 +375,7 @@ float VL53L0X::getSignalRateLimit(void)
 // factor of N decreases the range measurement standard deviation by a factor of
 // sqrt(N). Defaults to about 33 milliseconds; the minimum is 20 ms.
 // based on VL53L0X_set_measurement_timing_budget_micro_seconds()
-bool VL53L0X::setMeasurementTimingBudget(uint32_t budget_us)
+bool VL53L0X::setMeasurementTimingBudget(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint32_t budget_us)
 {
   SequenceStepEnables enables;
   SequenceStepTimeouts timeouts;
@@ -526,7 +518,7 @@ uint32_t VL53L0X::getMeasurementTimingBudget(void)
 //  pre:  12 to 18 (initialized default: 14)
 //  final: 8 to 14 (initialized default: 10)
 // based on VL53L0X_set_vcsel_pulse_period()
-bool VL53L0X::setVcselPulsePeriod(vcselPeriodType type, uint8_t period_pclks)
+bool VL53L0X::setVcselPulsePeriod(ros::ServiceClient &client, hbs2::i2c_bus &srv, vcselPeriodType type, uint8_t period_pclks)
 {
   uint8_t vcsel_period_reg = encodeVcselPeriod(period_pclks);
 
@@ -703,7 +695,7 @@ bool VL53L0X::setVcselPulsePeriod(vcselPeriodType type, uint8_t period_pclks)
 
 // Get the VCSEL pulse period in PCLKs for the given period type.
 // based on VL53L0X_get_vcsel_pulse_period()
-uint8_t VL53L0X::getVcselPulsePeriod(vcselPeriodType type)
+uint8_t VL53L0X::getVcselPulsePeriod(ros::ServiceClient &client, hbs2::i2c_bus &srv, vcselPeriodType type)
 {
   if (type == VcselPeriodPreRange)
   {
@@ -722,7 +714,7 @@ uint8_t VL53L0X::getVcselPulsePeriod(vcselPeriodType type)
 // inter-measurement period in milliseconds determining how often the sensor
 // takes a measurement.
 // based on VL53L0X_StartMeasurement()
-void VL53L0X::startContinuous(uint32_t period_ms)
+void VL53L0X::startContinuous(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint32_t period_ms)
 {
   writeReg(client, srv, 0x80, 0x01);
   writeReg(client, srv, 0xFF, 0x01);
@@ -760,7 +752,7 @@ void VL53L0X::startContinuous(uint32_t period_ms)
 
 // Stop continuous measurements
 // based on VL53L0X_StopMeasurement()
-void VL53L0X::stopContinuous(void)
+void VL53L0X::stopContinuous(ros::ServiceClient &client, hbs2::i2c_bus &srv, void)
 {
   writeReg(client, srv, SYSRANGE_START, 0x01); // VL53L0X_REG_SYSRANGE_MODE_SINGLESHOT
 
@@ -774,7 +766,7 @@ void VL53L0X::stopContinuous(void)
 // Returns a range reading in millimeters when continuous mode is active
 // (readRangeSingleMillimeters() also calls this function after starting a
 // single-shot range measurement)
-uint16_t VL53L0X::readRangeContinuousMillimeters(void)
+uint16_t VL53L0X::readRangeContinuousMillimeters(ros::ServiceClient &client, hbs2::i2c_bus &srv, void)
 {
   startTimeout();
   while ((readReg(client, srv, RESULT_INTERRUPT_STATUS) & 0x07) == 0)
@@ -798,7 +790,7 @@ uint16_t VL53L0X::readRangeContinuousMillimeters(void)
 // Performs a single-shot range measurement and returns the reading in
 // millimeters
 // based on VL53L0X_PerformSingleRangingMeasurement()
-uint16_t VL53L0X::readRangeSingleMillimeters(void)
+uint16_t VL53L0X::readRangeSingleMillimeters(ros::ServiceClient &client, hbs2::i2c_bus &srv, void)
 {
   writeReg(client, srv, 0x80, 0x01);
   writeReg(client, srv, 0xFF, 0x01);
@@ -838,7 +830,7 @@ bool VL53L0X::timeoutOccurred()
 // Get reference SPAD (single photon avalanche diode) count and type
 // based on VL53L0X_get_info_from_device(),
 // but only gets reference SPAD count and type
-bool VL53L0X::getSpadInfo(uint8_t * count, bool * type_is_aperture)
+bool VL53L0X::getSpadInfo(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t * count, bool * type_is_aperture)
 {
   uint8_t tmp;
 
@@ -880,7 +872,7 @@ bool VL53L0X::getSpadInfo(uint8_t * count, bool * type_is_aperture)
 
 // Get sequence step enables
 // based on VL53L0X_GetSequenceStepEnables()
-void VL53L0X::getSequenceStepEnables(SequenceStepEnables * enables)
+void VL53L0X::getSequenceStepEnables(ros::ServiceClient &client, hbs2::i2c_bus &srv, SequenceStepEnables * enables)
 {
   uint8_t sequence_config = readReg(client, srv, SYSTEM_SEQUENCE_CONFIG);
 
@@ -895,7 +887,7 @@ void VL53L0X::getSequenceStepEnables(SequenceStepEnables * enables)
 // based on get_sequence_step_timeout(),
 // but gets all timeouts instead of just the requested one, and also stores
 // intermediate values
-void VL53L0X::getSequenceStepTimeouts(SequenceStepEnables const * enables, SequenceStepTimeouts * timeouts)
+void VL53L0X::getSequenceStepTimeouts(ros::ServiceClient &client, hbs2::i2c_bus &srv, SequenceStepEnables const * enables, SequenceStepTimeouts * timeouts)
 {
   timeouts->pre_range_vcsel_period_pclks = getVcselPulsePeriod(VcselPeriodPreRange);
 
@@ -982,7 +974,7 @@ uint32_t VL53L0X::timeoutMicrosecondsToMclks(uint32_t timeout_period_us, uint8_t
 
 
 // based on VL53L0X_perform_single_ref_calibration()
-bool VL53L0X::performSingleRefCalibration(uint8_t vhv_init_byte)
+bool VL53L0X::performSingleRefCalibration(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t vhv_init_byte)
 {
   writeReg(client, srv, SYSRANGE_START, 0x01 | vhv_init_byte); // VL53L0X_REG_SYSRANGE_MODE_START_STOP
 
