@@ -62,7 +62,7 @@ bool VL53L0X::init(ros::ServiceClient &client, hbs2::i2c_bus &srv, bool io_2v8) 
 
   uint8_t spad_count;
   bool spad_type_is_aperture;
-  if (!getSpadInfo(&spad_count, &spad_type_is_aperture)) { return false; }
+  if (!getSpadInfo(client, srv, &spad_count, &spad_type_is_aperture)) { return false; }
 
   // The SPAD map (RefGoodSpadMap) is read by VL53L0X_get_info_from_device() in
   // the API, but the same data seems to be more easily readable from
@@ -200,13 +200,13 @@ bool VL53L0X::init(ros::ServiceClient &client, hbs2::i2c_bus &srv, bool io_2v8) 
   writeReg(client, srv, SYSTEM_SEQUENCE_CONFIG, 0xE8);
 
   // "Recalculate timing budget"
-  setMeasurementTimingBudget(measurement_timing_budget_us);
+  setMeasurementTimingBudget(client, srv, measurement_timing_budget_us);
 
   writeReg(client, srv, SYSTEM_SEQUENCE_CONFIG, 0x01);
-  if (!performSingleRefCalibration(0x40)) { return false; }
+  if (!performSingleRefCalibration(client, srv, 0x40)) { return false; }
 
   writeReg(client, srv, SYSTEM_SEQUENCE_CONFIG, 0x02);
-  if (!performSingleRefCalibration(0x00)) { return false; }
+  if (!performSingleRefCalibration(client, srv, 0x00)) { return false; }
 
   // "restore the previous Sequence Config"
   writeReg(client, srv, SYSTEM_SEQUENCE_CONFIG, 0xE8);
@@ -363,7 +363,7 @@ bool VL53L0X::setSignalRateLimit(ros::ServiceClient &client, hbs2::i2c_bus &srv,
 }
 
 // Get the return signal rate limit check value in MCPS
-float VL53L0X::getSignalRateLimit(void)
+float VL53L0X::getSignalRateLimit(ros::ServiceClient &client, hbs2::i2c_bus &srv, void)
 {
   return (float)readReg16Bit(client, srv, FINAL_RANGE_CONFIG_MIN_COUNT_RATE_RTN_LIMIT) / (1 << 7);
 }
@@ -394,8 +394,8 @@ bool VL53L0X::setMeasurementTimingBudget(ros::ServiceClient &client, hbs2::i2c_b
 
   uint32_t used_budget_us = StartOverhead + EndOverhead;
 
-  getSequenceStepEnables(&enables);
-  getSequenceStepTimeouts(&enables, &timeouts);
+  getSequenceStepEnables(client, srv, &enables);
+  getSequenceStepTimeouts(client, srv, &enables, &timeouts);
 
   if (enables.tcc)
   {
@@ -480,8 +480,8 @@ uint32_t VL53L0X::getMeasurementTimingBudget(void)
   // "Start and end overhead times always present"
   uint32_t budget_us = StartOverhead + EndOverhead;
 
-  getSequenceStepEnables(&enables);
-  getSequenceStepTimeouts(&enables, &timeouts);
+  getSequenceStepEnables(client, srv, &enables);
+  getSequenceStepTimeouts(client, srv, &enables, &timeouts);
 
   if (enables.tcc)
   {
@@ -525,8 +525,8 @@ bool VL53L0X::setVcselPulsePeriod(ros::ServiceClient &client, hbs2::i2c_bus &srv
   SequenceStepEnables enables;
   SequenceStepTimeouts timeouts;
 
-  getSequenceStepEnables(&enables);
-  getSequenceStepTimeouts(&enables, &timeouts);
+  getSequenceStepEnables(client, srv, &enables);
+  getSequenceStepTimeouts(client, srv, &enables, &timeouts);
 
   // "Apply specific settings for the requested clock period"
   // "Re-calculate and apply timeouts, in macro periods"
@@ -678,14 +678,14 @@ bool VL53L0X::setVcselPulsePeriod(ros::ServiceClient &client, hbs2::i2c_bus &srv
 
   // "Finally, the timing budget must be re-applied"
 
-  setMeasurementTimingBudget(measurement_timing_budget_us);
+  setMeasurementTimingBudget(client, srv, measurement_timing_budget_us);
 
   // "Perform the phase calibration. This is needed after changing on vcsel period."
   // VL53L0X_perform_phase_calibration() begin
 
   uint8_t sequence_config = readReg(client, srv, SYSTEM_SEQUENCE_CONFIG);
   writeReg(client, srv, SYSTEM_SEQUENCE_CONFIG, 0x02);
-  performSingleRefCalibration(0x0);
+  performSingleRefCalibration(client, srv, 0x0);
   writeReg(client, srv, SYSTEM_SEQUENCE_CONFIG, sequence_config);
 
   // VL53L0X_perform_phase_calibration() end
@@ -813,7 +813,7 @@ uint16_t VL53L0X::readRangeSingleMillimeters(ros::ServiceClient &client, hbs2::i
     }
   }
 
-  return readRangeContinuousMillimeters();
+  return readRangeContinuousMillimeters(client, srv);
 }
 
 // Did a timeout occur in one of the read functions since the last call to
@@ -889,7 +889,7 @@ void VL53L0X::getSequenceStepEnables(ros::ServiceClient &client, hbs2::i2c_bus &
 // intermediate values
 void VL53L0X::getSequenceStepTimeouts(ros::ServiceClient &client, hbs2::i2c_bus &srv, SequenceStepEnables const * enables, SequenceStepTimeouts * timeouts)
 {
-  timeouts->pre_range_vcsel_period_pclks = getVcselPulsePeriod(VcselPeriodPreRange);
+  timeouts->pre_range_vcsel_period_pclks = getVcselPulsePeriod(client, srv, VcselPeriodPreRange);
 
   timeouts->msrc_dss_tcc_mclks = readReg(client, srv, MSRC_CONFIG_TIMEOUT_MACROP) + 1;
   timeouts->msrc_dss_tcc_us =
@@ -902,7 +902,7 @@ void VL53L0X::getSequenceStepTimeouts(ros::ServiceClient &client, hbs2::i2c_bus 
     timeoutMclksToMicroseconds(timeouts->pre_range_mclks,
                                timeouts->pre_range_vcsel_period_pclks);
 
-  timeouts->final_range_vcsel_period_pclks = getVcselPulsePeriod(VcselPeriodFinalRange);
+  timeouts->final_range_vcsel_period_pclks = getVcselPulsePeriod(client, srv, VcselPeriodFinalRange);
 
   timeouts->final_range_mclks =
     decodeTimeout(readReg16Bit(client, srv, FINAL_RANGE_CONFIG_TIMEOUT_MACROP_HI));
@@ -989,4 +989,23 @@ bool VL53L0X::performSingleRefCalibration(ros::ServiceClient &client, hbs2::i2c_
   writeReg(client, srv, SYSRANGE_START, 0x00);
 
   return true;
+}
+
+int main(int argc, char **argv) {
+    ros::init(argc, argv, "vl53l0x");
+    ros::NodeHandle n;
+    ros::ServiceClient client = n.serviceClient<hbs2::i2c_bus>("i2c_srv");
+    hbs2::i2c_bus srv;
+    
+    VL53L0X ir_sensor;
+    ir_sensor.init(client, srv, 0);
+    sensor.setTimeout(500);
+
+    while(1) {
+	ROS_INFO("Distance: %umm", ir_sensor.readRangeContinuousMillimeters(client, srv));
+	if (ir_sensor.timeoutOccurred()) {
+	    ROS_ERROR("IR sensor timeout");
+	}
+    }
+    return 0;
 }
