@@ -1,4 +1,6 @@
-nclude <stdio.h>
+/*      Touch behavior node, subscriber to MPR121 hardware node publisher       */
+
+#include <stdio.h>
 #include <unistd.h>
 #include <linux/i2c-dev.h>
 #include <sys/ioctl.h>
