@@ -1,10 +1,14 @@
-#include "VL53L0X.h"
+// System
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
 
-#include "std_msgs/UInt16.h"
+// Custom
+#include "VL53L0X.h"
+
+// ROS
+#include "std_msgs/UInt16MultiArray.h"
 
 #define ADDRESS_DEFAULT 0b0101001
 // Record the current time to check an upcoming timeout against
@@ -18,6 +22,14 @@
 // Constructor
 VL53L0X::VL53L0X(void)
   : address(ADDRESS_DEFAULT)
+  , io_timeout(0) // no timeout
+  , did_timeout(false)
+{
+}
+
+// Address 0x30 Constructor
+VL53L0X::VL53L0X(uint8_t addr)
+  : address(addr)
   , io_timeout(0) // no timeout
   , did_timeout(false)
 {
@@ -213,10 +225,10 @@ bool VL53L0X::init(ros::ServiceClient &client, hbs2::i2c_bus &srv, bool io_2v8) 
   return true;
 }
 
-bool status_req(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
+bool status_req(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t address) {
     srv.request.request.resize(4);
     srv.request.size = 4;
-    srv.request.request = {0x00, 0x29, 0x00, 0x00};
+    srv.request.request = {0x00, address, 0x00, 0x00};
     usleep(1000);
     client.call(srv);
     if (!srv.response.success) return false;
@@ -230,7 +242,7 @@ void VL53L0X::writeReg(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t r
   srv.request.size = 4;
 
   if (client.call(srv)) { 
-    while(!status_req(client, srv));
+    while(!status_req(client, srv, address));
   } else { ROS_ERROR("Unable to write for IR sensor"); exit(1); }
 }
 
@@ -241,7 +253,7 @@ void VL53L0X::writeReg16Bit(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint
   srv.request.request = {0x02, address, reg, (uint8_t)((value >> 8) & 0xFF), (uint8_t)(value & 0xFF)};
 
   if (client.call(srv)) { 
-    while(!status_req(client, srv));
+    while(!status_req(client, srv, address));
   } else { ROS_ERROR("Unable to write for IR sensor"); exit(1); }
 }
 
@@ -253,7 +265,7 @@ void VL53L0X::writeReg32Bit(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint
              (uint8_t)((value >> 8) & 0xFF), (uint8_t)(value & 0xFF) };
 
   if (client.call(srv)) { 
-    while(!status_req(client, srv));
+    while(!status_req(client, srv, address));
   } else { ROS_ERROR("Unable to write for IR sensor"); exit(1); }
 
 }
@@ -265,7 +277,7 @@ uint8_t VL53L0X::readReg(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t
   srv.request.request = {0x01, address, reg};
 
   if (client.call(srv)) {
-    while(!status_req(client, srv));
+    while(!status_req(client, srv, address));
     return (uint8_t)srv.response.data.at(0);
   } else { ROS_ERROR("Unable to read from IR sensor"); exit(1); }
 }
@@ -278,8 +290,7 @@ uint16_t VL53L0X::readReg16Bit(ros::ServiceClient &client, hbs2::i2c_bus &srv, u
   srv.request.request = {0x01, address, reg, 0x00};
 
   if (client.call(srv)) {
-    while(!status_req(client, srv));
-    ROS_WARN("res.data.size: %i", srv.response.data.size());
+    while(!status_req(client, srv, address));
     value = (uint16_t)srv.response.data.at(0) << 8;
     value |= (uint16_t)srv.response.data.at(1);
     return value;
@@ -294,7 +305,7 @@ uint32_t VL53L0X::readReg32Bit(ros::ServiceClient &client, hbs2::i2c_bus &srv, u
   srv.request.request = {0x01, address, reg, 0x00, 0x00, 0x00};
 
   if (client.call(srv)) {
-    while(!status_req(client, srv));
+    while(!status_req(client, srv, address));
     value = (uint32_t)srv.response.data.at(0)  << 24;
     value |= (uint32_t)srv.response.data.at(1) << 16;
     value |= (uint32_t)srv.response.data.at(2) << 8;
@@ -311,7 +322,7 @@ void VL53L0X::writeMulti(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t
   srv.request.request = {0x02, address, reg};
 
   if (client.call(srv)) {
-    while(!status_req(client, srv));
+    while(!status_req(client, srv, address));
     srv.request.request.resize(2);
     srv.request.request = {0x02, address};
     while (count-- > 0) {
@@ -319,7 +330,7 @@ void VL53L0X::writeMulti(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t
     }
     srv.request.size = srv.request.request.size();
       if (client.call(srv)) {
-        while(!status_req(client, srv));
+        while(!status_req(client, srv, address));
       } else { ROS_ERROR("Unable to write multi to IR sensor"); exit(1); }
   } else { ROS_ERROR("Unable to write multi to IR sensor"); exit(1); }
     
@@ -334,8 +345,7 @@ void VL53L0X::readMulti(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t 
   for (int i = 0; i < (count-1); i++) { srv.request.request.push_back(0x00); }
 
   if (client.call(srv)) {
-    while(!status_req(client, srv));
-    ROS_WARN("response.data size: %u", srv.response.data.size());
+    while(!status_req(client, srv, address));
     for(int i = 0; i < srv.response.data.size(); i++) { // while (count-- > 0) {
       *(dst++) = srv.response.data.at(srv.response.data.size()-i-1);
     }
@@ -994,34 +1004,45 @@ int main(int argc, char **argv) {
     ros::ServiceClient client = n.serviceClient<hbs2::i2c_bus>("i2c_srv");
     hbs2::i2c_bus srv;
     
-    VL53L0X ir_sensor;
-    ir_sensor.init(client, srv, 0);
-    ir_sensor.setTimeout(500);
-    ir_sensor.startContinuous(client, srv);
+    VL53L0X ir_sensor_1;
+    VL53L0X ir_sensor_2(0x30);
+    VL53L0X ir_sensor_3(0x31);
+
+    ir_sensor_1.init(client, srv, 0);
+    ir_sensor_1.setTimeout(500);
+    ir_sensor_1.startContinuous(client, srv);
+
+//    ir_sensor_2.setAddress(client, srv, 0x30);    
+    ir_sensor_2.init(client, srv, 0);
+    ir_sensor_2.setTimeout(500);
+    ir_sensor_2.startContinuous(client, srv);
+
+//    ir_sensor_3.setAddress(client, srv, 0x31);
+    ir_sensor_3.init(client, srv, 0);
+    ir_sensor_3.setTimeout(500);
+    ir_sensor_3.startContinuous(client, srv);
 
     // Create publisher:
-    ros::Publisher ir_pub = n.advertise<std_msgs::UInt16>("tpc_track", 10);
-    // Running at 10Hz
+    ros::Publisher ir_pub = n.advertise<std_msgs::UInt16MultiArray>("tpc_track", 10);
     ros::Rate loop_rate(1);
 
     while(ros::ok) {
         // Store data in message object and then publish
-        std_msgs::UInt16 msg;
-        msg.data = ir_sensor.readRangeContinuousMillimeters(client, srv);
-
+        std_msgs::UInt16MultiArray msg;
+        // Clear array
+        msg.data.clear();
+        msg.data.push_back(ir_sensor_1.readRangeContinuousMillimeters(client, srv));
+        msg.data.push_back(ir_sensor_2.readRangeContinuousMillimeters(client, srv));
+        msg.data.push_back(ir_sensor_3.readRangeContinuousMillimeters(client, srv));
+/*       ROS_WARN("IR sensor 1 distance: %umm", ir_sensor_1.readRangeContinuousMillimeters(client, srv));
+       ROS_WARN("IR sensor 2 distance: %umm", ir_sensor_2.readRangeContinuousMillimeters(client, srv));
+       ROS_WARN("IR sensor 3 distance: %umm", ir_sensor_3.readRangeContinuousMillimeters(client, srv));
+*/
         // Broadcast message to subscribers
         ir_pub.publish(msg);
         ros::spinOnce();
         loop_rate.sleep();
     }
-/*
-    while(1) {
-    ROS_WARN("Distance: %umm", ir_sensor.readRangeContinuousMillimeters(client, srv));
-    if (ir_sensor.timeoutOccurred()) {
-        ROS_ERROR("IR sensor timeout");
-    }
-        usleep(500000);
-    }
-*/
     return 0;
 }
+

@@ -1,14 +1,13 @@
 /*      MPR121 Touch Sensor Hardware Node       */
 
+// System
 #include <stdio.h>
 #include <unistd.h>
 #include <stdint.h>
-#include <linux/i2c-dev.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
 #include <vector>
 #include <iostream>
 
+// ROS
 #include "ros/ros.h"
 #include "hbs2/i2c_bus.h"
 #include "std_msgs/UInt8.h"
@@ -26,7 +25,7 @@ bool status_req(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
 // Perform soft reset and start with MPR121 in "Stop mode" to prevent random reads.
 bool write_init(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
     srv.request.request.resize(4);
-    srv.request.request = {0x02, 0x5A, (signed char)0x80, 0x63}; //write to reg 0x80
+    srv.request.request = {0x02, 0x5A, (uint8_t)0x80, 0x63}; //write to reg 0x80
     srv.request.size = 4;
 
     if (client.call(srv)) {
@@ -89,33 +88,33 @@ bool reg_setup(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
     // MHD rising reg 0x2B, NHD rising reg 0x2C, NCL rising reg 0x2D, FDL rising reg 0x2E
     srv.request.request[2] = 0x2B; srv.request.request[3] = 0x01;
     if (!client.call(srv)) { return false; }
-    srv.request.request[2] = 0x2C; srv.request.request[3] = 0x01;
+    srv.request.request[2] = 0x2C; srv.request.request[3] = 0x01; 
     if (!client.call(srv)) { return false; }
-    srv.request.request[2] = 0x2D; srv.request.request[3] = 0x0E;
+    srv.request.request[2] = 0x2D; srv.request.request[3] = 0x0E; 
     if (!client.call(srv)) { return false; }
-    srv.request.request[2] = 0x2E; srv.request.request[3] = 0x00;
+    srv.request.request[2] = 0x2E; srv.request.request[3] = 0x00; 
     if (!client.call(srv)) { return false; }
 
     // MHD falling reg, 0x2F, NHD falling reg 0x30, NCL falling reg 0x31, FDL falling reg 0x32
-    srv.request.request[2] = 0x2F; srv.request.request[3] = 0x01;
+    srv.request.request[2] = 0x2F; srv.request.request[3] = 0x01; 
     if (!client.call(srv)) { return false; }
-    srv.request.request[2] = 0x30; srv.request.request[3] = 0x05;
+    srv.request.request[2] = 0x30; srv.request.request[3] = 0x05; 
     if (!client.call(srv)) { return false; }
-    srv.request.request[2] = 0x31; srv.request.request[3] = 0x01;
+    srv.request.request[2] = 0x31; srv.request.request[3] = 0x01; 
     if (!client.call(srv)) { return false; }
-    srv.request.request[2] = 0x32; srv.request.request[3] = 0x00;
+    srv.request.request[2] = 0x32; srv.request.request[3] = 0x00; 
     if (!client.call(srv)) { return false; }
 
     // NHD touched reg 0x33, NCL touched 0x34, FDL touched 0x35
-    srv.request.request[2] = 0x33; srv.request.request[3] = 0x00;
+    srv.request.request[2] = 0x33; srv.request.request[3] = 0x00; 
     if (!client.call(srv)) { return false; }
-    srv.request.request[2] = 0x34; srv.request.request[3] = 0x00;
+    srv.request.request[2] = 0x34; srv.request.request[3] = 0x00; 
     if (!client.call(srv)) { return false; }
-    srv.request.request[2] = 0x35; srv.request.request[3] = 0x00;
+    srv.request.request[2] = 0x35; srv.request.request[3] = 0x00; 
     if (!client.call(srv)) { return false; }
 
     // Debounce touch & release reg 0x5B, config 1 reg 0x5c, config 2 ref 0x5D
-    srv.request.request[2] = 0x5B; srv.request.request[3] = 0x00;
+    srv.request.request[2] = 0x5B; srv.request.request[3] = 0x00; 
     if (!client.call(srv)) { return false; }
     srv.request.request[2] = 0x5C; srv.request.request[3] = 0x10; // 16uA current
     if (!client.call(srv)) { return false; }
@@ -124,9 +123,9 @@ bool reg_setup(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
 
     srv.request.request[2] = 0x5E; srv.request.request[3] = 0x8F;
     if (!client.call(srv)) { return false; }
-
+    
     return true;
-}
+} 
 
 uint8_t report_touch(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
     uint16_t wasTouched = 0x0000, readTouch[2] = {0x0000}, currentlyTouched = 0;
@@ -144,11 +143,13 @@ uint8_t report_touch(ros::ServiceClient &client, hbs2::i2c_bus &srv) {
         currentlyTouched = readTouch[0];
         currentlyTouched |= readTouch[1] << 8;
         currentlyTouched &= 0x0FFF;
+        
+        ROS_WARN("currentlyTouched: %x", currentlyTouched);
 
         for(int i = 0; i < 12; i++) {
-            if ((currentlyTouched & (1 << i)) && !(wasTouched & (1 << i))) {
+            if ((currentlyTouched & (1 << i)) && !(wasTouched & (1 << i)) && (i != 4)) {
                 ROS_INFO("Pin %i was touched.\n", i);
-                return i;
+                return i; 
             }
             if (!(currentlyTouched & (1 << i)) && (wasTouched & (1 << i))) {
                 ROS_INFO("Pin %i was released. \n", i);
@@ -179,7 +180,7 @@ int main(int argc, char **argv) {
                     // Stuff message object with data and then publish
                     std_msgs::UInt8 msg;
                     msg.data = report_touch(client, srv);
-
+                        
                     // Broadcast message to anyone connected:
                     touch_pub.publish(msg);
                     ros::spinOnce();
@@ -191,3 +192,4 @@ int main(int argc, char **argv) {
 
     return 0;
 }
+
