@@ -27,9 +27,11 @@ def index():
 @app.route('/api/getcommand')
 def get_command():
     if os.path.exists(COMMAND_FILE_PATH):
-       with open(COMMAND_FILE_PATH, 'rb') as cmd_file:
+        with open(COMMAND_FILE_PATH, 'rb') as cmd_file:
             logger.info('Reading from command file.')
             return cmd_file.read(1)
+        # truncate file after returning its data to robot
+        open(COMMAND_FILE_PATH, 'w').close()
     else:
         logger.error('Command file does not exist.')
         return b'\x00'
@@ -41,6 +43,8 @@ def get_tts():
         with open(SPEECH_KW_PATH, 'r') as spch_file:
             logger.info('Reading from tts file.')
             return spch_file.readline()
+        # truncate file after returning its data to robot
+        open(SPEECH_KW_PATH, 'w').close()
     else:
         logger.error('TTS file does not exist.')
         return b'\x00'
