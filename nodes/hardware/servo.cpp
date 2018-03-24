@@ -10,29 +10,32 @@
 #include "hbs2/servo.h"
 
 
-int _MAESTRO_CHANNEL_ = 0;
+const int _MAESTRO_CHANNEL_ = 5;
+const std::string _MAESTRO_DEV_ = "/dev/ttyACM0"
+const std::string _MAESTRO_POSCTRL_ = "/home/nvidia/hbs2_1/src/hbs2/lib/maestro_set_pos.sh"
+const std::string _MAESTRO_SPDCTRL_ = "/home/nvidia/hbs2_1/src/hbs2/lib/maestro_set_spd.sh"
 
 
-std::string convert_from_deg(int deg)
+int convert_from_deg(int deg)
 {
 	int pos = 36*deg + 1060;
-	tempstr << x;
 	return pos;
 }
 
 
 void change_speed(spd)
 {
-	ROS_INFO("Changing speed by %s RPM", spd);
-	std::string syscomspd = "bash speed.sh /dev/ttyACM0 " + spd;
+	ROS_INFO("Changing speed to %s RPM.", spd);
+	std::string syscomspd = _MAESTRO_SPDCTRL_ + " " + _MAESTRO_DEV_ + " " + std::to_string(spd);
 	system((syscomspd).c_str());
 }
 
 
 void move(std::string chan, std::string pos)
 {
-	ROS_INFO("Changing head position by %s degrees", pos);
-	std::string syscompos = "bash run.sh /dev/ttyACM0 " + chan + " " + pos;
+	ROS_INFO("Changing head position to %s degrees.", pos);
+	pos = convert_from_deg(pos);
+	std::string syscompos = _MAESTRO_POSCTRL_ + " " + _MAESTRO_DEV_ + " " + _MAESTRO_CHANNEL_ + " " + std::to_string(pos);
 	system((syscompos).c_str());
 }
 
@@ -69,6 +72,7 @@ bool handle_req(hbs2::servo::Request &req, hbs2::servo::Response &res)
 			break;
 	}
 }
+
 
 int main(int argc, char** argv) {
 	ros::init(agc, argv, "servo");
