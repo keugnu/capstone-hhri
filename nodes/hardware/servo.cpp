@@ -13,6 +13,14 @@
 int _MAESTRO_CHANNEL_ = 0;
 
 
+std::string convert_from_deg(int deg)
+{
+	int pos = 36*deg + 1060;
+	tempstr << x;
+	return pos;
+}
+
+
 void change_speed(spd)
 {
 	ROS_INFO("Changing speed by %s RPM", spd);
