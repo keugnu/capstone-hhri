@@ -91,7 +91,7 @@ def speak():
         cmd_file.write(b'\x02')
     with open(SPEECH_KW_PATH, 'w') as spch_file:
         logger.info('Writing \"%s\" to TTS file.', request.args['tts'])
-        spch_file.write(request.args['tts'] + '\n')
+        spch_file.write(request.args['tts'])
     return b'\xFF'
 
 
