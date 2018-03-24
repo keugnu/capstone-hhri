@@ -5,6 +5,7 @@ lib64
 include/
 *.json
 *.log
+*.txt
 
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
