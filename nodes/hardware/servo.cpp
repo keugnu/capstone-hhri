@@ -1,89 +1,75 @@
 
-// using namespace std;  (remove this line - it could cause issues in ROS.)
-
 // System
-#include<stdlib.h>
-#include<string>
-#include<stdio.h>
-#include<iostream>
+#include <stdlib.h>
+#include <string>
+#include <stdio.h>
+#include <iostream>
+
+// ROS
+#include "ros/ros.h"
+#include "hbs2/servo.h"
 
 
-/*********************************
-	notes:
-	make /dev/ttyACM0 a global const string
-	use enums or byte literals instead of strings for commands (increases speed)
-	the input is not ever from console. your input will be from req.request.command. please change accordingly
-	when the command is completed set res.response.success = true
-	the entire main function needs to be renamed for something like "handle_req" and it will do the verificaiton of input from the servce call
-	main will be used only for doing the ROS setup. if you want, review a service client that has already been written and copy the format
-	use the absolute path to the shell scripts and make them a global const string
+int _MAESTRO_CHANNEL_ = 0;
 
-**********************************/
 
-/* remove help() this, we won't see it anyways
-
-int help()
+void change_speed(spd)
 {
-	cout << "\nServo Command 1.0\n";
-	cout << "chan -> select channel\n";
-	cout << "speed -> select channel\n";
-	cout << "move -> move servo pos\n";
-	cout << "end -> back out\n";
-	cout << "help -> see menu\n\n";
-	return 1;
-}
-*/
-
-void change_speed()
-{
-	string spd; // speed of servo
-	string syscomspd; // full string command
-	// cout << "speed values -3200 and 3200: ";
-	/** you need to check for valid input, don't assume it is valid */
-	// cin >> spd;
-	syscomspd = "bash speed.sh /dev/ttyACM0 " + spd;
+	ROS_INFO("Changing speed by %s RPM", spd);
+	std::string syscomspd = "bash speed.sh /dev/ttyACM0 " + spd;
 	system((syscomspd).c_str());
 }
 
 
-void move(string chan)
+void move(std::string chan, std::string pos)
 {
-	string pos; // pos of servo
-	string syscompos;// comand sent at end
-	pos = " ";
-	while (pos != "end")
-	{
-
-		// cout << "pos values # to #: ";
-		/** you need to check for valid input, don't assume it is valid */
-		// cin >> pos;
-		syscompos = "bash run.sh /dev/ttyACM0 "+ chan +" " + pos;
-		system((syscompos).c_str());
-	}
+	ROS_INFO("Changing head position by %s degrees", pos);
+	std::string syscompos = "bash run.sh /dev/ttyACM0 " + chan + " " + pos;
+	system((syscompos).c_str());
 }
 
 
-int main(int argc, char **argv)
+bool handle_req(hbs2::servo::Request &req, hbs2::servo::Response &res)
 {
-	string comand;
-	string pos; // position of servo
-	string chan; // channel
-	string cmd; // base comand 
-	string speed; // speed of servos
-	cmd = "";
-	while (cmd != "end")
-		{
-		cout << "controll menu\n";
-		cout << "enter command:" ;
-		cin >> cmd;
-		if (cmd == "chan")
-		{
-			cout << "channel # 0-5: ";
-			cin >> chan;
+	switch (req.command) {
+		case 1: {
+			ROS_INFO("A request to move the position of the head has been made.");
+			if(move(_MAESTRO_CHANNEL_, req.position)) {
+				res.success = false;
+				return true;
+			}
+			else {
+				ROS_ERROR("The posistion request as failed.");
+				return false;
+			}
+			break;
 		}
-		if (cmd == "speed")
-			change_speed();
-		if (cmd == "move")
-			move(chan);
+		case 2: {
+			ROS_INFO("A request to change the speed of head movement has been made.");
+			if(change_speed(req.speed)) {
+				res.success = true;
+				return true;
+			}
+			else {
+				ROS_ERROR("The servo request has failed.");
+				res.success = false;
+				return false;
+			}
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+int main(int argc, char** argv) {
+	ros::init(agc, argv, "servo");
+	ros::NodeHandle n;
+
+	ros::ServiceServer srv = n.advertiseService("servo_srv", handle_req);
+	ROS_INFO("ROS servo service has started.");
+	
+	ros::spin();
+	
 	return 0;
 }
