@@ -72,7 +72,8 @@ def set_data():
     logger.info("Data from robot incomming. Writing to data file.")
     with open(RETURN_DATA_PATH, 'w') as data_file:
         logger.info("Writing \"%s\" to data file.", request.args['data'])
-        data_file.write(request.args['data'])
+        sensor_data = int(request.args['data']) % 2**16
+        data_file.write(str(sensor_data))
     return b'\xFF'    
 
 
