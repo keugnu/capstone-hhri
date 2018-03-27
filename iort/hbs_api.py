@@ -29,9 +29,11 @@ def get_command():
     if os.path.exists(COMMAND_FILE_PATH):
         with open(COMMAND_FILE_PATH, 'rb') as cmd_file:
             logger.info('Reading from command file.')
-            return cmd_file.read(1)
+            cmd = cmd_file.read(1)
         # truncate file after returning its data to robot
-        open(COMMAND_FILE_PATH, 'w').close()
+        with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
+            cmd_file.write(b'\x00')
+        return cmd
     else:
         logger.error('Command file does not exist.')
         return b'\x00'
