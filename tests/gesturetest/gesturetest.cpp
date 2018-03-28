@@ -67,21 +67,21 @@ while(1) {
         printf("No Gesture\n");
         break;
       case RIGHT_SWIPE:
-        printf("Right Swipe. Speed: ");
-        printf("%u\n", gesture_speed);
+        printf("Right Swipe. Speed: \n");
+        printf("%u", gesture_speed);
         break;
       case LEFT_SWIPE:
-        printf("Left Swipe. Speed: ");
-        printf("%u\n", gesture_speed);
+        printf("Left Swipe. Speed: \n");
+        printf("%u", gesture_speed);
         break;
       case UP_SWIPE:
-        printf("Up Swipe. Speed: ");
-        printf("%u\n", gesture_speed);
+        printf("Up Swipe. Speed: \n");
+        printf("%u", gesture_speed);
         break;
       default:
         break;
     }
-    usleep(1000000);
+    usleep(100000);
 //  }
 }
 return 0;
