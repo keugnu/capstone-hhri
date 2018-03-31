@@ -526,8 +526,6 @@ bool ZX_Sensor::wireReadDataByte(uint8_t reg, uint8_t &val)
 {
     char wreg[1] = {reg};
     char i2c_rx_buff[1] = {0};
-    printf("0x%x\n", reg);  
-    sleep(2); 
    
     int file;
     char const *bus = "/dev/i2c-1";
@@ -545,7 +543,6 @@ bool ZX_Sensor::wireReadDataByte(uint8_t reg, uint8_t &val)
 
     read(file, i2c_rx_buff, 1);
     val = i2c_rx_buff[0];
-    printf("%u\n", val);
     
     if(close(file) < 0)
     {

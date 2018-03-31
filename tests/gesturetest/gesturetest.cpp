@@ -25,37 +25,36 @@ int main(int argc, char *argv[]) {
   //  printf("Something went wrong during ZX Sensor init!\n");
   //}
   
-while(1) {
-  bool gest_avail = zx_sensor.gestureAvailable();
-  printf("gesture avail: %d\n", gest_avail);
-  // If there is gesture data available, read and print it
-  if ( gest_avail ) {
-    gesture = zx_sensor.readGesture();
-    gesture_speed = zx_sensor.readGestureSpeed();
-    printf("Gesture: %u, \t Gesture speed: %u\n", (uint8_t)gesture, gesture_speed);
+  while(1) {
+    bool gest_avail = zx_sensor.gestureAvailable();
+    printf("gesture avail: %d\n", gest_avail);
+    // If there is gesture data available, read and print it
+    if ( gest_avail ) {
+      gesture = zx_sensor.readGesture();
+      gesture_speed = zx_sensor.readGestureSpeed();
+      printf("Gesture: %u, \t Gesture speed: %u\n", (uint8_t)gesture, gesture_speed);
 
-    switch ( gesture ) {
-      case NO_GESTURE:
-        printf("No Gesture\n");
-        break;
-      case RIGHT_SWIPE:
-        printf("Right Swipe. Speed: \n");
-        printf("%u", gesture_speed);
-        break;
-      case LEFT_SWIPE:
-        printf("Left Swipe. Speed: \n");
-        printf("%u", gesture_speed);
-        break;
-      case UP_SWIPE:
-        printf("Up Swipe. Speed: \n");
-        printf("%u", gesture_speed);
-        break;
-      default:
-        break;
-    }
-    usleep(100000);
-  }
->>>>>>> b8a5da897b5b69b7cd6e10473f76ea01f9aae049
-}
-return 0;
-}
+      switch ( gesture ) {
+        case NO_GESTURE:
+          printf("No Gesture\n");
+          break;
+        case RIGHT_SWIPE:
+          printf("Right Swipe. Speed: \n");
+          printf("%u", gesture_speed);
+          break;
+        case LEFT_SWIPE:
+          printf("Left Swipe. Speed: \n");
+          printf("%u", gesture_speed);
+          break;
+        case UP_SWIPE:
+          printf("Up Swipe. Speed: \n");
+          printf("%u", gesture_speed);
+          break;
+        default:
+          break;
+      } // end switch
+      usleep(100000);
+    } // end if
+  } // end while
+  return 0;
+} // end main
