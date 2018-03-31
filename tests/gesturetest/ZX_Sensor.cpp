@@ -115,7 +115,7 @@ bool ZX_Sensor::setInterruptTrigger(InterruptType interrupts)
 {
     
 #if DEBUG
-    Serial.print(F("Setting interrupts: "));
+    Serial.printf("Setting interrupts: "));
     Serial.println(interrupts);
 #endif
 
@@ -261,7 +261,7 @@ bool ZX_Sensor::positionAvailable()
     if ( !wireReadDataByte(ZX_STATUS, status) ) {
         return false;
     }
-    status &= 0b00000001;
+    status &= 0b00000001;    
     if ( status ) {
         return true;
     }
@@ -282,7 +282,8 @@ bool ZX_Sensor::gestureAvailable()
     if ( !wireReadDataByte(ZX_STATUS, status) ) {
         return false;
     }
-    status &= 0b00011100;
+    
+    status &= 0b00011100;    
     if ( status ) {
         return true;
     }
