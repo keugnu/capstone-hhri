@@ -34,27 +34,28 @@ while(1) {
     gesture_speed = zx_sensor.readGestureSpeed();
     printf("Gesture: %u, \t Gesture speed: %u\n", (uint8_t)gesture, gesture_speed);
 
-    // switch ( gesture ) {
-    //   case NO_GESTURE:
-    //     printf("No Gesture\n");
-    //     break;
-    //   case RIGHT_SWIPE:
-    //     printf("Right Swipe. Speed: ");
-    //     printf("%u\n", gesture_speed);
-    //     break;
-    //   case LEFT_SWIPE:
-    //     printf("Left Swipe. Speed: ");
-    //     printf("%u\n", gesture_speed);
-    //     break;
-    //   case UP_SWIPE:
-    //     printf("Up Swipe. Speed: ");
-    //     printf("%u\n", gesture_speed);
-    //     break;
-    //   default:
-    //     break;
-    // }
+    switch ( gesture ) {
+      case NO_GESTURE:
+        printf("No Gesture\n");
+        break;
+      case RIGHT_SWIPE:
+        printf("Right Swipe. Speed: \n");
+        printf("%u", gesture_speed);
+        break;
+      case LEFT_SWIPE:
+        printf("Left Swipe. Speed: \n");
+        printf("%u", gesture_speed);
+        break;
+      case UP_SWIPE:
+        printf("Up Swipe. Speed: \n");
+        printf("%u", gesture_speed);
+        break;
+      default:
+        break;
+    }
+    usleep(100000);
   }
-  usleep(500000);
+>>>>>>> b8a5da897b5b69b7cd6e10473f76ea01f9aae049
 }
 return 0;
 }
