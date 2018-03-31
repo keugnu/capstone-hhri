@@ -22,7 +22,7 @@ PCA9685::PCA9685(uint8_t addr) {
 void PCA9685::begin(ros::ServiceClient &client, hbs2::i2c_bus &srv, void) {
     reset(client, srv);
 
-    setPWMFreq(1000);
+    setPWMFreq(client, srv, 1000);
 }
 
 void PCA9685::reset(ros::ServiceClient &client, hbs2::i2c_bus &srv, void) {
@@ -48,7 +48,7 @@ void PCA9685::setPWMFreq(ros::ServiceClient &client, hbs2::i2c_bus &srv, float f
 
     uint8_t prescale = floor(prescaleval + 0.5);
     
-    uint8_t oldmode = read8(PCA9685_MODE1);
+    uint8_t oldmode = read8(client, srv, PCA9685_MODE1);
     uint8_t newmode = (oldmode & 0x7F) | 0x10; //sleep
     write8(client, srv, PCA9685_MODE1, newmode);            //go to sleep
     write8(client, srv, PCA9685_MODE1, prescale);           //set the prescaler
@@ -60,7 +60,7 @@ void PCA9685::setPWMFreq(ros::ServiceClient &client, hbs2::i2c_bus &srv, float f
                                              //turn on auto increment;
 
 #ifdef ENABLE_DEBUG_OUTPUT
-    printf("Mode now 0x%x\r\n",read8(PCA9685_MODE1));
+    printf("Mode now 0x%x\r\n",read8(client, srv, PCA9685_MODE1));
 #endif
 }
 
