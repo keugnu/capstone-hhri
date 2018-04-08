@@ -1,7 +1,6 @@
 /*  ADS1115 ADC hardware node */
 
 // System
-#include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -10,6 +9,7 @@
 
 // ROS
 #include "std_msgs/Int16MultiArray.h"
+#include "std_msgs/Int16.h"
 
 
 bool status_req(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_t address) {
@@ -29,9 +29,12 @@ static void writeRegister(ros::ServiceClient &client, hbs2::i2c_bus &srv, uint8_
   srv.request.size = 5;
   srv.request.request = {0x02, i2cAddress, reg, (uint8_t)((value >> 8) & 0xFF), (uint8_t)(value & 0xFF)};
 
-  if (client.call(srv)) { 
+  if (client.call(srv)) {
     while(!status_req(client, srv, i2cAddress));
-  } else { ROS_ERROR("Unable to write for ADC"); exit(1); }
+  } 
+  else { 
+    ROS_ERROR("Write request to ADC failed."); // exit(1);
+  }
 }
 
 
@@ -47,7 +50,10 @@ static uint16_t readRegister(ros::ServiceClient &client, hbs2::i2c_bus &srv, uin
     value = (uint16_t)srv.response.data.at(0) << 8;
     value |= (uint16_t)srv.response.data.at(1);
     return value;
-  } else { ROS_ERROR("Unable to read from ADC"); exit(1); } 
+  } 
+  else { 
+    ROS_ERROR("Read request to the ADC failed."); // exit(1);
+  } 
 }
 
 
@@ -321,9 +327,9 @@ int main(int argc, char *argv[]) {
   int16_t adc0, adc1, adc2, adc3;
 
   // Create publisher:
-    ros::Publisher adc_pub = n.advertise<std_msgs::UInt8>("tpc_adc", 5);
+  ros::Publisher adc_pub = n.advertise<std_msgs::Int16MultiArray>("tpc_adc", 5);
   // Running at 10Hz:
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(2);
 
   while(ros::ok) {        
       adc0 = ads.readADC_SingleEnded(client, srv, 0);
@@ -341,9 +347,9 @@ int main(int argc, char *argv[]) {
       msg.data.push_back(adc3);
 
       // Broadcast message to anyone connected:
-        adc_pub.publish(msg);
-        ros::spinOnce();
-        loop_rate.sleep();
+      adc_pub.publish(msg);
+      ros::spinOnce();
+      loop_rate.sleep();
   }
 
   return 0;
