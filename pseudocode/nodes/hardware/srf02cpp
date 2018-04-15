@@ -1,0 +1,21 @@
+Node:	srf02 (Sonar Proximity Sensor)
+Services:
+	Client: srv_i2c
+	Server: srv_sonar
+Input:
+	None
+Config: 
+Output:
+	uint16 range (cm)
+	bool success
+Steps:
+	1. Initialization: Create sonar service (srv_sonar)
+	2. Wait for service requests
+		(a) if a service request exists, then:
+			(i) Create srv_i2c client
+			(ii) Send a request to srv_i2c for a measurement
+			(iii) Wait for the srv_i2c reuqest to be complete
+			(iv) if the srv_i2c request is complete, then:
+				(1) Return the measurement to the request client with success (response.range, response.success)
+			(v) else, return unsuccessful to request client (response.success)
+			(vi) Continue waiting for requests
