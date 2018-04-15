@@ -1,23 +1,19 @@
 Node:	tracker (Motion to follow object around robot)
+Services:
+	Client: servo_srv
+Topics:
+	Subscriber: tpc_track (size=5)
 Input:
-	struct proximity[]	// three IR sensors (left, right, center)
+	None
 Config:
-	max proximity: 100cm
+	(var) last_position: maintains the current position of the servo
+	(global const) _SERVO_SPEED_: 50 rpm
+	(global const) _SERVO_POS_CHANGE_: 20 degrees
 Output:
 	None
 Steps:
-	Initialization: Begin subscribing to tpc_tracker (10Hz)
-	1. 	if proximity from all sensors is not max, then (a person is in view)
-			(a) if left.proximity < max, then
-					(i) send request to srv_head_movement (+5)
-				elseif right.proximity < max, then
-					(i) send request to srv_head_movement (-5)
-			(b) continue
-			(c) begin tracking loop
-				if right sensor proximity < max and ~= center proximity, then
-					(a) make request to srv_track (+5 degrees)
-				else if left sensor proximity < max and ~= center proximity, then
-					(a) make request to srv_track (-5 degrees)
-				else if all sensors are >= max
-					(a) make request to srv_track (90)
-					(b)	break
+	Initialization: Begin subscribing to tpc_tracker
+	1. 	Find the minimum distance measured from each sensor
+		(a) if minimum is not center, then:
+			(i) send request to servo_srv to move toward sensor with minimum measurement
+		(b) else do nothing
