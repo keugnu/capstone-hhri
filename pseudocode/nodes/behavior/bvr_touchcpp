@@ -1,4 +1,4 @@
-Node:	touch (Speech response to taps/pats on the should)
+Node:	touch (Speech response to taps/pats on the shoulder)
 Services:
 	Client: tts_srv
 Topics:
