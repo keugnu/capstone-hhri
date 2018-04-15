@@ -1,18 +1,24 @@
-Node:	zxgesture_pub (Gesture sensor, GestureType is an enumeration for possible gestures)
+Node:	zxgesture (Gesture sensor)
+Services:
+	Client: srv_i2c
+Topics:
+	Publisher: tpc_wave (rate: 10Hz, size: 5)
 Input:
 	None
 Config:
-	int16 address
-	uint8 gesture { (enum) GestureType }
-	
-	enum GestureType {
-		RIGHT_SWIPE = 0x01,
-		LEFT_SWIPE = 0x02,
-		NO_GESTURE = 0xFF
-	}
 Output:
-	uint8 gesture
+	uint8 x_pos[3], z_pos[3] --> tpc_wave
 Steps:
-	1. Initialization: Send read request to I2C bus manager node
-	2. Publish gesture to tpc_gesture (10Hz)
+	1. Initialization: Create wave gesture topic (tpc_wave) and i2c service (srv_i2c)
+	2. Create ZX_Gesture object and initialize the hardware with address 0x10:
+		(a) Send write requests to srv_i2c for Initialization
+		(b) Wait for the write requests to complete
+		(c) if the write requests fail, then:
+			(i) Shut down the node
+		(d) else, begin a loop (10Hz) to read ZX_Gesture data:
+			(i) Send read requests to srv_i2c to read ZX_Gesture data
+			(ii) Wait for the read requests to complete
+			(iii) if the read requests succeed, then:
+				(1) Publish ZX_Gesture data to tpc_wave
+			(iv) else, continue loop to read ZX_Gesture data
 	
