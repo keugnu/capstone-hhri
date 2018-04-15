@@ -1,0 +1,19 @@
+Node:	ads1115 (I2C ADC)
+Services:
+	Client: srv_i2c
+Topics:
+	Publisher: tpc_adc (rate: 2Hz, size: 5)
+Input:
+	None
+Config:
+	include ADS1115.h
+Output:
+	int16 adc[5] --> tpc_adc
+Steps:
+	1. Initialization: Create tpc_adc
+	2. Begin 2Hz loop reading ADS1115 data
+		(a) Send request to srv_i2c for reading on all channels (0-3)
+		(b) Wait for status of the read request to be complete
+		(c) if the read request was successful, then:
+			(i) Publish measurement to tpc_adc
+		(d) else continue loop
