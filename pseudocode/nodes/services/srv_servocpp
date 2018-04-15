@@ -1,0 +1,28 @@
+Node:   maestro (Servo Controller)
+Services:
+    Server: srv_servo
+Topics:
+    None
+Input:
+    uint8 command
+    uint8 speed
+    uint8 position
+Config:
+    max right: 140 degrees
+    max left: 40 degrees
+    min speed: 1 rpm
+    max speed: 100 rpm
+    COMMAND:
+        |   1: change position  |
+        |   2: change speed     |
+    CONVERSION FROM DEGREES:
+        degrees * 36 + 1060
+Output:
+    bool success
+Steps:
+    1. Initialization: Create and advertise servo control service (srv_servo)
+    2. Send a system call to the servo in the neck to face forward (90 degrees)
+    3. Wait for service requests
+    4. if a service request exists, then:
+        (a) Send system call to the maestro to change position or speed
+    5. Continue waiting for requests
