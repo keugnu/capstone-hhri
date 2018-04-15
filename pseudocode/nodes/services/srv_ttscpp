@@ -1,0 +1,16 @@
+Node:   tts_srv (TTS service)
+Services:
+    Server: srv_tts
+Topics:
+    None
+Input:
+    string text
+Config:
+Output:
+    bool success
+Steps:
+    1. Initialization: Create and advertise tts service (srv_tts)
+    2. Wait for service requests
+    3. if a service request exits, then:
+        (a) Send a system call to festival with the request text (request.text)
+    4. Continue waiting for service requests
