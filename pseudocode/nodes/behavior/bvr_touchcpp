@@ -1,11 +1,13 @@
 Node:	touch (Speech response to taps/pats on the should)
+Services:
+	Client: tts_srv
+Topics:
+	Subscriber: tpc_touch (size=5)
 Input:
-	
-Config:
-	struct touch { unit8 addr, uint16 pressure }
+	None
 Output:
 	None
 Steps:
-	Initialization: begin subscribing to tpc_touch (10Hz)
+	Initialization: begin subscribing to tpc_touch
 	1. if one or more touch sensors register a tap/pat then:
-		(a) send request to srv_speaker ("Thank you")
+		(a) send request to srv_tts ("Thank you")
