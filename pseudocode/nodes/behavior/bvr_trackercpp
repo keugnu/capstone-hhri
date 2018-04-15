@@ -1,4 +1,4 @@
-Node:	tracker (Motion to follow object around robot)
+Node:	tracker (Motion to follow object in front of robot)
 Services:
 	Client: servo_srv
 Topics:
