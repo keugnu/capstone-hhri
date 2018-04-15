@@ -1,12 +1,21 @@
 Node:	hug (Speech response to hugging force)
+Services:
+	Client: tts_srv
+			led_srv
+Topics:
+	Subscriber: tpc_adc
 Input:
-	struct pressure_sensor
+	None
+Config:
+	hug force threshold: 2.8V or less
 Output:
-	string hug_response: "I love you"
-	string happy_color: "yellow"
+	None
 Steps:
-	Initialization: begin subscribing to tpc_force (10Hz)
-	1. if more than one force input registered (data input from >1 topics) then:
-	2. if pressure is greater than 5lbs/sq. in., then:
-		(a) send request to srv_speaker (hug_response)
-		(b) Publish happy_color to tpc_colors
+	Initialization: Create tts service client (tts_srv) and led service client (led_srv)
+	1. Begin subscribing to the ADC topic (tpc_adc) for reading force sensor data
+	2. if both the right and left force sensor datum inidicate a hug, then:
+		(a) Send a request to the LED driver (led_srv) to change color to yellow (request.color: 4)
+		(b) Send a request to the TTS service (request.text: "thank you")
+		(c) Sleep for 4 seconds
+		(d) Send a request to the LED driver (led_srv) to turn off (request.color: 0)
+	3. Continue reading the ADC topic
