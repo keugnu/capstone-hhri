@@ -1,6 +1,8 @@
 Node:	iort
 Services:
 	Client: srv_iot
+Topics:
+	None
 Input:
 	None
 Config:
