@@ -1,19 +1,30 @@
 Node:	led_pca9685 (LED driver)
+Services:
+	Client: srv_i2c
+	Server: srv_led
+Topics:
+	None
 Input:
-	String color ["red", "blue", "yellow"]
+	uint8 color
 Config:
-	uint8 address
+	color:
+		|	1: red		|
+		|	2: blue		|
+		|	3: green	|
+		|	4: yellow	|
+		|	5: white	|
+		|	6: violet	|
+		|	else: off	|
 Output:
-	uint16 pwm_freq_r (to control red light)
-	uint16 pwm_freq_g (to control green light)
-	uint16 pwm_freq_b (to control blue light)
+	bool success
 Steps:
-	1. 	Initialization: Send write request to I2C bus manager node
-			(a) Set LEDs to off by setting pwm_freq_r, pwm_freq_g, pwm_freq_b to 0.0
-	2. 	Subscribe to tpc_colors (2Hz)
-	3. 	if a change is detected on tpc_colors then
-			(a) Send write request to I2C bus manager node
-				(i) 	if color is "red" then pwm_freq_r = 4096, pwm_freq_g = 0, pwm_freq_b = 0
-				(ii) 	if color is "blue" then pwm_freq_r = 0, pwm_freq_g = 0, pwm_freq_b = 4096
-				(ii) 	if color is "yellow" then pwm_freq_r = 4096, pwm_freq_g = 819, pwm_freq_b = 0
-			
+	1. Initialization: Create LED service, srv_led
+	2. Wait for service request
+		(a) if service request is present, then:
+			(i)	Determine the color that is requested (request.color)
+			(ii) Send request to srv_i2c with RGB color request
+			(iii) Wait for status of the request to be complete
+			(iv) if the request is completed successfully, then:
+				(1) Return true to the request client (response.success)
+			(vi) else, return false to the request client (response.success)
+		(b) else, continue waiting
