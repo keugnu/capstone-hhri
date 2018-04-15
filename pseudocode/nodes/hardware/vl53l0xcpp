@@ -1,11 +1,25 @@
-Node:	vl53l0x_pub (TOF Proximity Sensor, there will be three of these nodes)
+Node:	vl53l0x (IR Laser TOF Proximity Sensor)
+Services:
+	Client: srv_i2c
+Topics:
+	Publisher: tpc_track (rate: 5Hz, size: 10)
 Input:
 	None
 Config:
-	struct ir_sense { unit8 addr, unit16 proximity (cm) }
 Output:
-	ir_sense
+	center, left, right --> tpc_track
 Steps:
-	1. Initialization: Send read request to I2C Bus Manager
-	2. Convert mm to cm
-	3. Publish ir_sense to tpc_tracker (10Hz)
+	1. Initialization: Create tracking topic (tpc_track) and i2c service client (srv_i2c)
+	2. Begin initializaiton of VL53L0X sensors
+		(a) Send write requests to srv_i2c to set registers for initializaiton
+		(b) if the initializaiton fails, then:
+			(i) Shut down the node
+	3. Begin loop (5Hz) to publish sensor data to tpc_track:
+		(a) Send read requets to srv_i2c for each VL53L0X
+		(b) Wait for the read requests to complete
+		(c) if the read requests succeed, then:
+			(i) if center sensor data is less than 10, then:
+				(1) Publish center as 8190 to tpc_track
+			(ii) else, publish center sensor data to tpc_track
+			(ii) Publish right and left to tpc_track, respectively
+		(d) Continue loop to read VL53L0X data
