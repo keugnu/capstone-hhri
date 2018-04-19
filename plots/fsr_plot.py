@@ -15,9 +15,9 @@ ax.plot(fsr_x, fsr_mea)
 ax.set(xlabel='Applied Force (N)', ylabel='Measured Voltage',
        title='FSR Sensitivity')
 
-ax.xaxis.label.set_size(15)
-ax.yaxis.label.set_size(15)
-ax.title.set_size(20)
+ax.xaxis.label.set_size(30)
+ax.yaxis.label.set_size(30)
+ax.title.set_size(35)
 
 ax.grid()
 

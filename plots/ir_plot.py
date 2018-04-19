@@ -6,7 +6,7 @@ import numpy as np
 ir = host_subplot(111, axes_class=AA.Axes)
 plt.subplots_adjust(right=0.75)
 
-plt.rcParams.update({'axes.titlesize': 20})
+plt.rcParams.update({'axes.titlesize': 35})
 
 ir.set(title="VL53L0X IR Laser TOF Sensor")
 
@@ -37,10 +37,10 @@ par2.set_ylim(0, 100)
 ir.legend(loc=2)
 
 ir.axis["left"].label.set_color(p1.get_color())
-ir.axis["left"].label.set_size(15)
-ir.axis["bottom"].label.set_size(15)
+ir.axis["left"].label.set_size(30)
+ir.axis["bottom"].label.set_size(30)
 par2.axis["right"].label.set_color(p2.get_color())
-par2.axis["right"].label.set_size(15)
+par2.axis["right"].label.set_size(30)
 
 plt.draw()
 plt.show()

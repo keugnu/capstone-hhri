@@ -17,9 +17,9 @@ ax.plot(time, temp_mea_hot)
 ax.set(xlabel='Elapsed Time (s)', ylabel='Measured Temperature (C)',
        title='MCP9808 Temperature Sensor Recovery')
 
-ax.xaxis.label.set_size(15)
-ax.yaxis.label.set_size(15)
-ax.title.set_size(20)
+ax.xaxis.label.set_size(30)
+ax.yaxis.label.set_size(30)
+ax.title.set_size(35)
 
 ax.grid()
 
