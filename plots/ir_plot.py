@@ -30,7 +30,7 @@ ir_err = np.array([41,39.3333333333333,44,72,52,52.2857142857143,15.75,41.111111
 p1, = ir.plot(ir_mm, ir_mea, label="Measured")
 p2, = par2.plot(ir_mm, ir_err, label="% Error")
 plt.xticks(np.arange(min(ir_mm), max(ir_mm) + 1, 10))
-plt.yticks(np.arange(20, 230, 10))
+plt.yticks(np.arange(10, 270, 10))
 
 par2.set_ylim(0, 100)
 
