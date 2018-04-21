@@ -16,14 +16,16 @@ Please enter a command:
     1)  Detect distance of nearest object (in centimeters) in front of the robot
     2)  Speak
     3)  Shake head
-    4)  Exit the program
+    4)  Read the ambient temperature
+    5)  Exit the program
 """
 
-API_URI = 'http://127.0.0.1:5000'
+API_URI = 'http://54.187.205.93:5000'
 VALID_COMMANDS = {
     1: 'readsonar',
     2: 'speak',
-    3: 'shakehead'
+    3: 'shakehead',
+    4: 'readtemp'
 }
 
 
@@ -50,7 +52,7 @@ def send_command(user_input, tts=None):
 
 
 def check_input(user_input):
-    if user_input == 4:
+    if user_input == 5:
         logger.warning('User wishes to exit. Shutting down...')
         print('Goodbye.')
         sys.exit(0)

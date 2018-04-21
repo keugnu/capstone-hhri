@@ -17,6 +17,7 @@ app = Flask(__name__)
         1   :   readsonar
         2   :   speak
         3   :   shakehead
+        4   :   readtemp
 """
 
 @app.route('/api')
@@ -83,6 +84,15 @@ def read_sonar():
     with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
         logger.info('Writing 0x01 to command file.')
         cmd_file.write(b'\x01')
+    return b'\xFF'
+
+
+@app.route('/api/readtemp')
+def read_temp():
+    logger.info("Request to read temperature sensor has been made.")
+    with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
+        logger.info('Writing 0x04 to command file.')
+        cmd_file.write(b'\x04')
     return b'\xFF'
 
 
