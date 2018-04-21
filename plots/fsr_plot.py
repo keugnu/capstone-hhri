@@ -10,14 +10,14 @@ fsr_x = np.array([0,0.0556227,0.1112454,0.1668681,0.2224908,0.2781135,0.3337362,
 # Note that using plt.subplots below is equivalent to using
 # fig = plt.figure() and then ax = fig.add_subplot(111)
 fig, ax = plt.subplots()
-ax.plot(fsr_x, fsr_mea)
+ax.plot(fsr_x, fsr_mea, linewidth=6)
 
-ax.set(xlabel='Applied Force (N)', ylabel='Measured Voltage',
+ax.set(xlabel='Applied Force (N)', ylabel='Measured Voltage (V)',
        title='FSR Sensitivity')
 
-ax.xaxis.label.set_size(30)
-ax.yaxis.label.set_size(30)
-ax.title.set_size(35)
+ax.xaxis.label.set_size(40)
+ax.yaxis.label.set_size(40)
+ax.title.set_size(45)
 
 ax.grid()
 

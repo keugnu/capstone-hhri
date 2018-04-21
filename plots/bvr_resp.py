@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
  
 objects = ('Pat on back', 'Sonar via IoT', 'Temperature via IoT', 'TTS via IoT', 'Shake Head via IoT', 'Hugging')
 y_pos = np.arange(len(objects))
-timings = [1.7, 0.3, 0.5, 4.2, 1.9, 4.2]
+timings = [0.001, 1.4, 0.5, 2,4, 0.3, 0.001]
  
 plt.bar(y_pos, timings, align='center', alpha=0.5)
 plt.xticks(y_pos, objects)

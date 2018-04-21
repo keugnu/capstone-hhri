@@ -11,15 +11,15 @@ time = np.arange(0, 618, 2)
 # Note that using plt.subplots below is equivalent to using
 # fig = plt.figure() and then ax = fig.add_subplot(111)
 fig, ax = plt.subplots()
-ax.plot(time, temp_mea_cold)
-ax.plot(time, temp_mea_hot)
+ax.plot(time, temp_mea_cold, linewidth=6)
+ax.plot(time, temp_mea_hot, linewidth=6)
 
 ax.set(xlabel='Elapsed Time (s)', ylabel='Measured Temperature (C)',
        title='MCP9808 Temperature Sensor Recovery')
 
-ax.xaxis.label.set_size(30)
-ax.yaxis.label.set_size(30)
-ax.title.set_size(35)
+ax.xaxis.label.set_size(40)
+ax.yaxis.label.set_size(40)
+ax.title.set_size(45)
 
 ax.grid()
 
