@@ -16,7 +16,7 @@ Please enter a command:
     1)  Detect distance of nearest object (in centimeters) in front of the robot
     2)  Speak
     3)  Shake head
-    4)  Read the ambient temperature
+    4)  Read the ambient temperature (in fahrenheit)
     5)  Exit the program
 """
 
