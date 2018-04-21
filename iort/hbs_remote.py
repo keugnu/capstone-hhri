@@ -69,7 +69,7 @@ def check_input(user_input):
             return send_command(user_input, tts)
         else:
             status = send_command(user_input)
-            if status == 200 and user_input in [1]:
+            if status == 200 and user_input in [1,4]:
                 print('Waiting a maximum of 10 seconds for data from the sensor...\n')
                 for i in range(10):
                     data = wait_for_data()
