@@ -19,6 +19,10 @@ ax.xaxis.label.set_size(40)
 ax.yaxis.label.set_size(40)
 ax.title.set_size(45)
 
+plt.xticks(fontsize=25)
+plt.yticks(fontsize=25)
+
+
 ax.grid()
 
 plt.show()

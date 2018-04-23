@@ -42,5 +42,8 @@ ir.axis["bottom"].label.set_size(40)
 par2.axis["right"].label.set_color(p2.get_color())
 par2.axis["right"].label.set_size(40)
 
+ir.axis["left"].xticks(fontsize=25)
+
+
 plt.draw()
 plt.show()
