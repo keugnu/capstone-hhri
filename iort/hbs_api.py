@@ -17,6 +17,7 @@ app = Flask(__name__)
         1   :   readsonar
         2   :   speak
         3   :   shakehead
+        4   :   readtemp
 """
 
 @app.route('/api')
@@ -27,9 +28,13 @@ def index():
 @app.route('/api/getcommand')
 def get_command():
     if os.path.exists(COMMAND_FILE_PATH):
-       with open(COMMAND_FILE_PATH, 'rb') as cmd_file:
+        with open(COMMAND_FILE_PATH, 'rb') as cmd_file:
             logger.info('Reading from command file.')
-            return cmd_file.read(1)
+            cmd = cmd_file.read(1)
+        # truncate file after returning its data to robot
+        with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
+            cmd_file.write(b'\x00')
+        return cmd
     else:
         logger.error('Command file does not exist.')
         return b'\x00'
@@ -41,6 +46,8 @@ def get_tts():
         with open(SPEECH_KW_PATH, 'r') as spch_file:
             logger.info('Reading from tts file.')
             return spch_file.readline()
+        # truncate file after returning its data to robot
+        open(SPEECH_KW_PATH, 'w').close()
     else:
         logger.error('TTS file does not exist.')
         return b'\x00'
@@ -66,7 +73,8 @@ def set_data():
     logger.info("Data from robot incomming. Writing to data file.")
     with open(RETURN_DATA_PATH, 'w') as data_file:
         logger.info("Writing \"%s\" to data file.", request.args['data'])
-        data_file.write(request.args['data'])
+        sensor_data = int(request.args['data']) % 2**16
+        data_file.write(str(sensor_data))
     return b'\xFF'    
 
 
@@ -79,6 +87,15 @@ def read_sonar():
     return b'\xFF'
 
 
+@app.route('/api/readtemp')
+def read_temp():
+    logger.info("Request to read temperature sensor has been made.")
+    with open(COMMAND_FILE_PATH, 'wb') as cmd_file:
+        logger.info('Writing 0x04 to command file.')
+        cmd_file.write(b'\x04')
+    return b'\xFF'
+
+
 @app.route('/api/speak')
 def speak():
     logger.info('Request to use TTS has been made')
@@ -87,7 +104,7 @@ def speak():
         cmd_file.write(b'\x02')
     with open(SPEECH_KW_PATH, 'w') as spch_file:
         logger.info('Writing \"%s\" to TTS file.', request.args['tts'])
-        spch_file.write(request.args['tts'] + '\n')
+        spch_file.write(request.args['tts'])
     return b'\xFF'
 
 
